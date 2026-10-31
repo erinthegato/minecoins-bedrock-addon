@@ -22,6 +22,9 @@
     },
     "mcn_icon_shutdown": {
       "textures": "textures/items/mcn_icon_shutdown"
+    },
+    "mcn_guidebook": {
+      "textures": "textures/items/mcn_guidebook"
     }
   }
 }

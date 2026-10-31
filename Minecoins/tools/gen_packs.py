@@ -14,7 +14,7 @@ UUID_BP_DATA = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02"
 UUID_BP_SCRIPT = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03"
 UUID_RP = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04"
 UUID_RP_RES = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05"
-VERSION = [1, 2, 0]
+VERSION = [1, 4, 0]
 
 
 def write(path, obj):
@@ -69,14 +69,10 @@ def cube(origin, size):
 
 
 def rack_box(direction):
-    """Wall-mounted rack: full height, thin, flush with one side."""
-    if direction == "south":
-        return {"origin": [-8, 0, 3], "size": [16, 16, 5]}
-    if direction == "east":
-        return {"origin": [3, 0, -8], "size": [5, 16, 16]}
-    if direction == "west":
-        return {"origin": [-8, 0, -8], "size": [5, 16, 16]}
-    return {"origin": [-8, 0, -8], "size": [16, 16, 5]}
+    """Freestanding rack: full height, centred on the block space on both
+    horizontal axes, so it never hugs a wall. Direction still selects the front
+    face, so every cardinal variant shares this box."""
+    return {"origin": [-6, 0, -6], "size": [12, 16, 12]}
 
 
 def monitor_box(direction):
@@ -130,7 +126,7 @@ for name, colour, hardness, light in BLOCKS:
         components["minecraft:collision_box"] = {"origin": [-8, 0, -8], "size": [16, 8, 16]}
         components["minecraft:selection_box"] = {"origin": [-8, 0, -8], "size": [16, 8, 16]}
     elif name == "server_rack":
-        # full-height wall panel, rotated to the face you place it against
+        # full-height cabinet, centred in the block and rotated for its front face
         description["traits"] = {
             "minecraft:placement_direction": {
                 "enabled_states": ["minecraft:cardinal_direction"],
@@ -224,6 +220,75 @@ write(os.path.join(BP, "items", "tablet.json"), {
     },
 })
 
+# ---------------------------------------------------------------- guide book
+write(os.path.join(BP, "items", "guidebook.json"), {
+    "format_version": "1.21.0",
+    "minecraft:item": {
+        "description": {
+            "identifier": "minecoins:guidebook",
+            "menu_category": {"category": "items"},
+        },
+        "components": {
+            "minecraft:icon": {"textures": {"default": "mcn_guidebook"}},
+            "minecraft:display_name": {"value": "Minecoins Guide"},
+            "minecraft:max_stack_size": 1,
+        },
+    },
+})
+
+write(os.path.join(BP, "recipes", "guidebook.json"), {
+    "format_version": "1.20.10",
+    "minecraft:recipe_shapeless": {
+        "description": {"identifier": "minecoins:guidebook"},
+        "tags": ["crafting_table"],
+        "ingredients": [
+            {"item": "minecraft:book"},
+            {"item": "minecraft:redstone"},
+            {"item": "minecraft:glass"},
+        ],
+        "result": {"item": "minecoins:guidebook", "count": 1},
+    },
+})
+
+# ----------------------------------------------------- creative item catalog
+# menu_category alone is not enough for every block shape: stateful blocks can be
+# skipped by the creative menu. The catalog lists every block explicitly in one
+# collapsible group. The guide book is listed twice on purpose - the user wants
+# it reachable from both the Items and the Equipment tab.
+CATALOG_GROUP = "minecoins:itemGroup.name.infrastructure"
+GUIDE_GROUP = "minecoins:itemGroup.name.guide"
+
+
+def group(icon, name, items):
+    return {
+        "group_identifier": {"icon": icon, "name": name},
+        "items": items,
+    }
+
+
+write(os.path.join(BP, "item_catalog", "crafting_item_catalog.json"), {
+    "format_version": "1.21.0",
+    "minecraft:crafting_items_catalog": {
+        "categories": [
+            {
+                "category_name": "construction",
+                "groups": [group(CATALOG_GROUP, CATALOG_GROUP,
+                                 [f"minecoins:{n}" for n, *_ in BLOCKS])],
+            },
+            {
+                "category_name": "items",
+                "groups": [group("minecoins:guidebook", GUIDE_GROUP,
+                                 ["minecoins:guidebook"])],
+            },
+            {
+                "category_name": "equipment",
+                "groups": [group("minecoins:guidebook", GUIDE_GROUP,
+                                 ["minecoins:guidebook"])],
+            },
+        ],
+    },
+})
+
 # ---------------------------------------------------------------- recipes
 RECIPES = [
     ("power_cable", ["IRI"], {"I": "minecraft:iron_ingot", "R": "minecraft:redstone"}, 4),
@@ -311,6 +376,9 @@ BLOCK_NAMES = {
 }
 lang = [f"tile.minecoins:{n}.name={label}" for n, label in BLOCK_NAMES.items()]
 lang.append("item.minecoins:tablet.name=Minecoins Tablet")
+lang.append(f"{CATALOG_GROUP}=Minecoins")
+lang.append(f"{GUIDE_GROUP}=Minecoins Guide")
+lang.append("item.minecoins:guidebook.name=Minecoins Guide")
 os.makedirs(os.path.join(RP, "texts"), exist_ok=True)
 with open(os.path.join(RP, "texts", "en_US.lang"), "w", encoding="utf-8", newline="\n") as f:
     f.write("\n".join(lang) + "\n")
@@ -381,6 +449,7 @@ write(os.path.join(RP, "textures", "item_texture.json"), {
         "mcn_icon_coins": {"textures": "textures/items/mcn_icon_coins"},
         "mcn_icon_docs": {"textures": "textures/items/mcn_icon_docs"},
         "mcn_icon_shutdown": {"textures": "textures/items/mcn_icon_shutdown"},
+        "mcn_guidebook": {"textures": "textures/items/mcn_guidebook"},
     },
 })
 
@@ -582,13 +651,31 @@ def tex_minecoin(x, y):
     return (255, 214, 92, 255)
 
 
+def tex_guidebook(x, y):
+    """Blue help book: spine, cream page edge, redstone clasp, glass sheen."""
+    if x < 3 or x > 12 or y < 2 or y > 13:
+        return (0, 0, 0, 0)
+    if x == 3 or x == 4:
+        return (24, 34, 74, 255)
+    if 11 <= x <= 12 and 4 <= y <= 11:
+        return (232, 226, 198, 255)
+    if y == 2 or y == 13 or x == 12:
+        return (18, 26, 58, 255)
+    if 6 <= x <= 8 and 5 <= y <= 7:
+        return (206, 44, 44, 255)
+    if (x + y) % 7 == 0:
+        return (150, 186, 240, 255)
+    return (40, 66, 138, 255)
+
+
 TEXTURES = {
     **{f"mcn_{n}": globals()[f"tex_{n}"] for n in BLOCK_TEX},
 }
 for n, fn in TEXTURES.items():
     png(os.path.join(RP, "textures", "blocks", f"{n}.png"), fn)
 
-ITEM_TEXTURES = {"mcn_tablet": tex_tablet, "mcn_minecoin": tex_minecoin}
+ITEM_TEXTURES = {"mcn_tablet": tex_tablet, "mcn_minecoin": tex_minecoin,
+                 "mcn_guidebook": tex_guidebook}
 for n, fn in ITEM_TEXTURES.items():
     png(os.path.join(RP, "textures", "items", f"{n}.png"), fn)
 

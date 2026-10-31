@@ -12,6 +12,13 @@ server/radio infrastructure it depends on.
   `@minecraft/server 2.0.0`).
 - Requires Minecraft Bedrock 1.21.70+ (script API 2.0.0).
 
+### Guide book
+`minecoins:guidebook` is a shapeless craft (book + redstone + glass) and every
+player gets one on their first spawn. Using it opens a five-chapter help
+window: start here, power grid, cooling and storage, radio and LAN, minecoins
+and the store. It works anywhere - no radio needed - and it is listed in the
+creative menu under both the **Items** and **Equipment** tabs.
+
 ### 9x UI skin
 The resource pack also carries the Win95 form chrome: an **additive**
 `ui/server_form.json` that inserts a 9-slice gray frame into the `long_form`
@@ -46,8 +53,9 @@ route or an in-game iteration pass.
   (walkable, stack it against walls, place it flush on floors).
 - **Battery** — 5000 EU each. **Cooling unit** — 3 EU/s, both half-height blocks
   (half-block model and half-block hitbox).
-- **Server rack** — 8 EU/s and a full-height wall panel: it mounts flush against
-  the side you place it on and turns to face you.
+- **Server rack** — 8 EU/s and a full-height cabinet that sits centred in
+  its block, so it no longer hugs a wall. It draws power through the cable
+  run and needs a cooling unit on the same grid.
 - **Power cable** — a pipe that connects like a fence: it grows an arm toward
   any neighbouring cable or machine and retracts when that neighbour is removed.
   It still joins the grid by touching blocks (BFS, up to ~700).
@@ -82,10 +90,9 @@ route or an in-game iteration pass.
   `System Properties`, `My Documents — …`, `Notepad — LEDGER.DAT`.
   Bedrock draws the form frame and buttons itself, so the window body is themed
   rather than pixel-reskinned.
-- **Manipulable pointer**: the desktop draws a cursor (`▸`) over a 3-column
-  icon grid. Left/Up/Down/Right buttons move it, Open launches whatever it sits
-  on, and Start lists the programs. The pointer position is saved per player, so
-  it is where you left it next time the tablet opens.
+- **Plain desktop**: one button per program (My Computer, Network,
+  Minecoins.exe, Store, My Documents). Closing the window quits in one
+  press - no pointer state and no screen re-opening behind you.
 - **Right-click a server rack** for digital storage, a **radio tower** for
   network status, or a **monitor** for the full desktop — a monitor needs the
   same radio/LAN link as the tablet. Sneak to place blocks against them.

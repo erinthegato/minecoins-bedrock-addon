@@ -35,26 +35,26 @@
       "minecraft:geometry": "geometry.mcn_server_rack_north",
       "minecraft:collision_box": {
         "origin": [
-          -8,
+          -6,
           0,
-          -8
+          -6
         ],
         "size": [
+          12,
           16,
-          16,
-          5
+          12
         ]
       },
       "minecraft:selection_box": {
         "origin": [
-          -8,
+          -6,
           0,
-          -8
+          -6
         ],
         "size": [
+          12,
           16,
-          16,
-          5
+          12
         ]
       }
     },
@@ -65,26 +65,26 @@
           "minecraft:geometry": "geometry.mcn_server_rack_north",
           "minecraft:collision_box": {
             "origin": [
-              -8,
+              -6,
               0,
-              -8
+              -6
             ],
             "size": [
+              12,
               16,
-              16,
-              5
+              12
             ]
           },
           "minecraft:selection_box": {
             "origin": [
-              -8,
+              -6,
               0,
-              -8
+              -6
             ],
             "size": [
+              12,
               16,
-              16,
-              5
+              12
             ]
           }
         }
@@ -95,26 +95,26 @@
           "minecraft:geometry": "geometry.mcn_server_rack_south",
           "minecraft:collision_box": {
             "origin": [
-              -8,
+              -6,
               0,
-              3
+              -6
             ],
             "size": [
+              12,
               16,
-              16,
-              5
+              12
             ]
           },
           "minecraft:selection_box": {
             "origin": [
-              -8,
+              -6,
               0,
-              3
+              -6
             ],
             "size": [
+              12,
               16,
-              16,
-              5
+              12
             ]
           }
         }
@@ -125,26 +125,26 @@
           "minecraft:geometry": "geometry.mcn_server_rack_east",
           "minecraft:collision_box": {
             "origin": [
-              3,
+              -6,
               0,
-              -8
+              -6
             ],
             "size": [
-              5,
+              12,
               16,
-              16
+              12
             ]
           },
           "minecraft:selection_box": {
             "origin": [
-              3,
+              -6,
               0,
-              -8
+              -6
             ],
             "size": [
-              5,
+              12,
               16,
-              16
+              12
             ]
           }
         }
@@ -155,26 +155,26 @@
           "minecraft:geometry": "geometry.mcn_server_rack_west",
           "minecraft:collision_box": {
             "origin": [
-              -8,
+              -6,
               0,
-              -8
+              -6
             ],
             "size": [
-              5,
+              12,
               16,
-              16
+              12
             ]
           },
           "minecraft:selection_box": {
             "origin": [
-              -8,
+              -6,
               0,
-              -8
+              -6
             ],
             "size": [
-              5,
+              12,
               16,
-              16
+              12
             ]
           }
         }

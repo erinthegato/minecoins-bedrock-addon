@@ -8,3 +8,6 @@ tile.minecoins:radio_extender.name=Radio Extender
 tile.minecoins:lan_cable.name=LAN Cable
 tile.minecoins:monitor.name=Monitor
 item.minecoins:tablet.name=Minecoins Tablet
+minecoins:itemGroup.name.infrastructure=Minecoins
+minecoins:itemGroup.name.guide=Minecoins Guide
+item.minecoins:guidebook.name=Minecoins Guide

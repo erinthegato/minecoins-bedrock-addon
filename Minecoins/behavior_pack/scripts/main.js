@@ -27,6 +27,7 @@ const B = {
   monitor: "minecoins:monitor",
 };
 const TABLET = "minecoins:tablet";
+const GUIDE_BOOK = "minecoins:guidebook";
 const GRID_BLOCKS = [B.cable, B.panel, B.battery, B.cooling, B.rack];
 const NODE_BLOCKS = [B.tower, B.extender];
 
@@ -640,9 +641,10 @@ async function openBuy(player, cat, grid) {
       form.button(`§f${info.name} §7- §e${info.price}`, iconFor(id));
     }
     const res = await show(form, player);
-    if (res.canceled || res.selection === undefined || res.selection === 0) return;
+    if (res.canceled || res.selection === undefined) return false;
+    if (res.selection === 0) return true;
     const id = list[res.selection - 1];
-    if (!id) return;
+    if (!id) return false;
     const info = BUY.get(id);
     const bal = coins(player);
     if (bal < info.price) {
@@ -685,62 +687,23 @@ async function openChain(player) {
 }
 
 /* ---------------------------------------------------------------- tablet UI */
-/* --------------------------------------------------- desktop pointer/cursor */
-const DESKTOP_ITEMS = [
-  { name: "My Computer", short: "Computer", act: "status", icon: UI_ICON.computer },
-  { name: "Network Neighborhood", short: "Network", act: "network", icon: UI_ICON.computer },
-  { name: "Minecoins.exe", short: "Coins", act: "chain", icon: UI_ICON.coins },
-  { name: "Store", short: "Store", act: "store", icon: UI_ICON.store },
-  { name: "My Documents", short: "Documents", act: "storage", icon: UI_ICON.docs },
-  { name: "Shut Down", short: "Shut Down", act: "off", icon: UI_ICON.off },
+/* --------------------------------------------------------- tablet desktop */
+/* Plain server-form desktop: one button per program, no pointer state. */
+const PROGRAMS = [
+  { name: "My Computer", act: "status", icon: UI_ICON.computer },
+  { name: "Network Neighborhood", act: "network", icon: UI_ICON.computer },
+  { name: "Minecoins.exe", act: "chain", icon: UI_ICON.coins },
+  { name: "Store", act: "store", icon: UI_ICON.store },
+  { name: "My Documents", act: "storage", icon: UI_ICON.docs },
 ];
-const DESKTOP_COLS = 3;
 
-function cursorIndex(player) {
-  const v = player.getDynamicProperty("mc:cursor");
-  const max = DESKTOP_ITEMS.length - 1;
-  return typeof v === "number" ? Math.max(0, Math.min(max, Math.floor(v))) : 0;
-}
-
-function desktopRows(cursor) {
-  const rows = [];
-  const rowCount = Math.ceil(DESKTOP_ITEMS.length / DESKTOP_COLS);
-  for (let r = 0; r < rowCount; r++) {
-    const cells = [];
-    for (let c = 0; c < DESKTOP_COLS; c++) {
-      const i = r * DESKTOP_COLS + c;
-      if (i >= DESKTOP_ITEMS.length) { cells.push("§8·"); continue; }
-      const label = DESKTOP_ITEMS[i].short;
-      cells.push(i === cursor ? `§a▸§e§l${label}§r` : `§7${label}`);
-    }
-    rows.push(cells.join("  §8│  "));
-  }
-  return rows;
-}
-
-async function launchDesktopItem(player, act, grid) {
+async function launchProgram(player, act, grid) {
   if (act === "status") return openStatus(player, grid);
   if (act === "network") return openNetwork(player);
   if (act === "chain") return openChain(player);
   if (act === "store") return openStore(player, grid);
   if (act === "storage") return openStorage(player);
-  return null;
-}
-
-async function openStartMenu(player, grid) {
-  const menu = new ActionFormData()
-    .title(WIN_TITLE)
-    .body(winBody("Start", [
-      `§0§l${OS_NAME}§r §8· Programs`,
-      `§7Pick a program from the list.`,
-    ]))
-    .button("§8[§9 Cancel §8]");
-  const programs = DESKTOP_ITEMS.filter((i) => i.act !== "off");
-  for (const it of programs) menu.button(`§8▣ §7${it.name}`, it.icon);
-  const res = await show(menu, player);
-  if (res.canceled || res.selection === undefined || res.selection === 0) return;
-  const picked = programs[res.selection - 1];
-  if (picked) await launchDesktopItem(player, picked.act, grid);
+  return undefined;
 }
 
 async function openDesktop(player, label = "Tablet") {
@@ -751,45 +714,21 @@ async function openDesktop(player, label = "Tablet") {
     player.playSound("note.bass");
     return;
   }
-  for (;;) {
-    const st = serverStatus(player);
-    const cursor = cursorIndex(player);
-    const active = DESKTOP_ITEMS[cursor];
-    const form = new ActionFormData()
-      .title(WIN_TITLE)
-      .body(winBody(`Desktop — ${OS_NAME}`, [
-        ...desktopRows(cursor),
-        ``,
-        `§7Pointer§8: §f${active.name} §8(${Math.floor(cursor / DESKTOP_COLS) + 1},${(cursor % DESKTOP_COLS) + 1})`,
-        `§7Minecoins§8: §e${coins(player)} §8· §7Server§8: ${st.ok ? "§aonline" : "§coffline"}`,
-        `§7Link§8: ${sig.why}`,
-        `§8Arrows move the pointer · Open launches · Start lists programs.`,
-      ]))
-      .button("§8[§9 ◀ Left §8]")
-      .button("§8[§9 ▲ Up §8]")
-      .button("§8[§9 ▼ Down §8]")
-      .button("§8[§9 ▶ Right §8]")
-      .button(`§8[§9 Open ${active.name} §8]`, active.icon)
-      .button("§8[§9 Start §8]");
-
-    const res = await show(form, player);
-    if (res.canceled || res.selection === undefined) return;
-    const max = DESKTOP_ITEMS.length - 1;
-    if (res.selection === 0) { player.setDynamicProperty("mc:cursor", Math.max(0, cursor - 1)); continue; }
-    if (res.selection === 1) { player.setDynamicProperty("mc:cursor", Math.max(0, cursor - DESKTOP_COLS)); continue; }
-    if (res.selection === 2) { player.setDynamicProperty("mc:cursor", Math.min(max, cursor + DESKTOP_COLS)); continue; }
-    if (res.selection === 3) { player.setDynamicProperty("mc:cursor", Math.min(max, cursor + 1)); continue; }
-    if (res.selection === 4) {
-      if (active.act === "off") {
-        player.playSound("random.fizz");
-        player.sendMessage(`§8[§7${OS_NAME}§8] §7It is now safe to turn off your tablet.`);
-        return;
-      }
-      await launchDesktopItem(player, active.act, st.grid);
-      continue;
-    }
-    await openStartMenu(player, st.grid);
-  }
+  const st = serverStatus(player);
+  const form = new ActionFormData()
+    .title(WIN_TITLE)
+    .body(winBody(`Desktop — ${OS_NAME}`, [
+      `§7Minecoins§8: §e${coins(player)} §8· §7Server§8: ${st.ok ? "§aonline" : "§coffline"}`,
+      `§7Link§8: ${sig.why}`,
+      `§7Storage§8: §f${totalStored(loadStore(player))}§7 items`,
+      ``,
+      `§8Pick a program. Close the window to shut it down.`,
+    ]));
+  for (const prog of PROGRAMS) form.button(`§8▣ §7${prog.name}`, prog.icon);
+  const res = await show(form, player);
+  if (res.canceled || res.selection === undefined) return;
+  const picked = PROGRAMS[res.selection];
+  if (picked) await launchProgram(player, picked.act, st.grid);
 }
 
 async function openNetwork(player) {
@@ -827,7 +766,86 @@ async function openStore(player, grid) {
     const pick = await show(menu, player);
     if (pick.canceled || pick.selection === undefined || pick.selection === 0) return;
     const cat = cats[pick.selection - 1];
-    if (cat && CATALOG[cat]) await openBuy(player, cat, grid);
+    if (!cat || !CATALOG[cat]) continue;
+    if (!(await openBuy(player, cat, grid))) return;
+  }
+}
+
+/* ------------------------------------------------------------------ guide */
+const GUIDE_PAGES = [
+  {
+    name: "1. Start here",
+    lines: [
+      "Craft a §fMinecoins Tablet§8: §7iron, glass and redstone.",
+      "Craft a §fRadio Tower§8: §7iron, copper and redstone.",
+      "Place the tower under open sky, then use the tablet.",
+      "You bank §e1 minecoin§7 every §f5 real minutes§7, with a chat note.",
+      "This guide needs no radio signal - read it anywhere.",
+    ],
+  },
+  {
+    name: "2. Power grid",
+    lines: [
+      "§fSolar Panel§7 makes §a25 EU/s§7, and only in daylight.",
+      "§fPower Cable§7 links panels, batteries, racks and coolers.",
+      "§fBattery§7 stores §a5000 EU§7 each; charge it, then run the rack.",
+      "§fServer Rack§7 draws §c8 EU/s§7, each §fCooling Unit§7 §c3 EU/s§7.",
+      "Pipe arms grow toward whatever they touch - no wrench needed.",
+    ],
+  },
+  {
+    name: "3. Cooling and storage",
+    lines: [
+      "A rack with no cooling unit on its grid overheats and refuses to open.",
+      "Wire the cooling unit into the same cable run as the rack.",
+      "Click the rack, or pick My Documents on the tablet, to reach the vault.",
+      "Deposit takes your held stack; pick an entry to withdraw 64.",
+      "The vault is per player and works within §f48 blocks§7 of the rack.",
+    ],
+  },
+  {
+    name: "4. Radio and LAN",
+    lines: [
+      "The tablet only opens with signal: §f1500 blocks§7 from a tower.",
+      "§fRadio Extender§7 repeats the network, hop by hop.",
+      "Underground there is no radio at all - dig with a plan.",
+      "Run §fLAN Cable§7 from a tower down to your base to link it.",
+      "Click a §fMonitor§7 block for the same screens on a wall.",
+    ],
+  },
+  {
+    name: "5. Minecoins and the store",
+    lines: [
+      "Your balance is shown on the tablet desktop and in the store.",
+      "Prices run in tiers: §7 2, 6, 14, 25, 50, 75§7 minecoins.",
+      "§bDiamonds§7 and diamond gear sit at the top of the catalog.",
+      "§dEnchanted books§7 are the tier just below diamonds.",
+      "Minecoins.exe on the tablet shows the hash-chained ledger.",
+    ],
+  },
+];
+
+async function openGuide(player) {
+  for (;;) {
+    const form = new ActionFormData()
+      .title(WIN_TITLE)
+      .body(winBody("Minecoins Guide - C:\\MINECOINS\\GUIDE.HLP", [
+        `§7Chapters§8: §f${GUIDE_PAGES.length}§8 · §7Minecoins§8: §e${coins(player)}`,
+        `§8Choose a chapter. Close the window to put the guide away.`,
+      ]));
+    for (const page of GUIDE_PAGES) form.button(`§8▣ §7${page.name}`);
+    const res = await show(form, player);
+    if (res.canceled || res.selection === undefined) return;
+    const page = GUIDE_PAGES[res.selection];
+    if (!page) continue;
+    const back = await show(
+      new ActionFormData()
+        .title(WIN_TITLE)
+        .body(winBody(page.name, page.lines))
+        .button("§8[§9 Back to contents §8]"),
+      player
+    );
+    if (!back || back.canceled || back.selection === undefined) return;
   }
 }
 
@@ -860,8 +878,15 @@ try {
 
 world.afterEvents.itemUse.subscribe((ev) => {
   const item = ev.itemStack;
-  if (!item || item.typeId !== TABLET) return;
+  if (!item) return;
   const player = ev.source;
+  if (item.typeId === GUIDE_BOOK) {
+    openGuide(player).catch(() => {
+      player.sendMessage("§b[Guide] §cCould not open the guide.");
+    });
+    return;
+  }
+  if (item.typeId !== TABLET) return;
   openDesktop(player, "Tablet").catch(() => {
     player.sendMessage("§b[Tablet] §cConnection interrupted.");
   });
@@ -872,6 +897,10 @@ world.afterEvents.playerSpawn.subscribe((ev) => {
   if (!ev.initialSpawn) return;
   const p = ev.player;
   p.setDynamicProperty(P_LAST, Date.now());
+  if (!p.getDynamicProperty("mc:guide")) {
+    p.setDynamicProperty("mc:guide", true);
+    try { giveItem(p, GUIDE_BOOK, 1); } catch { /* inventory not ready yet */ }
+  }
   if (coins(p) === 0 && !readList(P_CHAIN).some((b) => b.p === p.name.slice(0, 16))) {
     p.sendMessage("§b[Minecoins] §fWelcome — you mine 1 minecoin every 5 real minutes. Craft a Minecoins Tablet.");
   }
