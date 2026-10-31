@@ -14,7 +14,7 @@ UUID_BP_DATA = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02"
 UUID_BP_SCRIPT = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03"
 UUID_RP = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04"
 UUID_RP_RES = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05"
-VERSION = [1, 4, 1]
+VERSION = [1, 4, 2]
 
 
 def write(path, obj):
@@ -748,57 +748,6 @@ def icon_pixel(x, y):
 png(os.path.join(BP, "pack_icon.png"), icon_pixel, ICON)
 png(os.path.join(RP, "pack_icon.png"), icon_pixel, ICON)
 
-
-# ---------------------------------------------------- 9x UI skin (main RP)
-# Additive JSON-UI skin for server forms, shipped inside the main resource pack.
-# Delete ui/server_form.json to fall back to the plain form.
-WIN95_FRAME = {
-    "type": "image",
-    "texture": "textures/ui/mcn_win95_frame",
-    "size": ["100% + 8px", "100% + 8px"],
-    "offset": [-4, -4],
-    "layer": -10,
-    "nine_slice_buttom": 6,
-    "nine_slice_bottom": 6,
-    "nine_slice_left": 6,
-    "nine_slice_right": 6,
-    "nine_slice_top": 6,
-}
-
-SERVER_FORM_UI = {
-    "namespace": "server_form",
-    "long_form": {
-        "modifications": [{
-            "array_name": "controls",
-            "operation": "insert_front",
-            "value": [{"win95_frame": WIN95_FRAME}],
-        }]
-    },
-    "custom_form": {
-        "modifications": [{
-            "array_name": "controls",
-            "operation": "insert_front",
-            "value": [{"win95_frame": WIN95_FRAME}],
-        }]
-    },
-}
-
-write(os.path.join(RP, "ui", "server_form.json"), SERVER_FORM_UI)
-
-
-def win95_frame(x, y):
-    if x in (0, 31) or y in (0, 31):
-        return (0, 0, 0, 255)
-    if x == 1 or y == 1:
-        return (255, 255, 255, 255)
-    if x == 30 or y == 30:
-        return (128, 128, 128, 255)
-    if x == 2 or y == 2:
-        return (223, 223, 223, 255)
-    return (192, 192, 192, 255)
-
-
-png(os.path.join(RP, "textures", "ui", "mcn_win95_frame.png"), win95_frame, 32)
 
 # ---------------------------------------------------------------- packaging
 def zip_pack(out, folders):
