@@ -14,7 +14,7 @@ UUID_BP_DATA = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02"
 UUID_BP_SCRIPT = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03"
 UUID_RP = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04"
 UUID_RP_RES = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05"
-VERSION = [1, 5, 1]
+VERSION = [1, 5, 2]
 
 # Creative menu: one collapsible group per tab. The same names are declared
 # on the block/item definitions and in item_catalog/crafting_item_catalog.json
@@ -154,7 +154,7 @@ for name, colour, hardness, light in BLOCKS:
         components["minecraft:selection_box"] = box0
         permutations = []
         for mask in range(16):
-            condition = " and ".join(
+            condition = " && ".join(
                 f"q.block_state('minecoins:{side}') == "
                 f"{'true' if mask & bit else 'false'}"
                 for side, bit in RACK_SIDES
@@ -204,7 +204,7 @@ for name, colour, hardness, light in BLOCKS:
         components["minecraft:selection_box"] = {"origin": [-2, 0, -2], "size": [4, 16, 4]}
         permutations = []
         for mask in range(16):
-            condition = " and ".join(
+            condition = " && ".join(
                 f"q.block_state('minecoins:{d}') == {'true' if mask & bit else 'false'}"
                 for d, _o, bit in PIPE_DIRECTIONS
             )
@@ -262,6 +262,7 @@ write(os.path.join(BP, "recipes", "guidebook.json"), {
     "minecraft:recipe_shapeless": {
         "description": {"identifier": "minecoins:guidebook"},
         "tags": ["crafting_table"],
+        "unlock": {"context": "AlwaysUnlocked"},
         "ingredients": [
             {"item": "minecraft:book"},
             {"item": "minecraft:redstone"},
@@ -299,11 +300,7 @@ write(os.path.join(BP, "item_catalog", "crafting_item_catalog.json"), {
             },
             {
                 "category_name": "equipment",
-                "groups": [
-                    {"items": ["minecoins:tablet"]},
-                    group("minecoins:guidebook", GUIDE_GROUP,
-                          ["minecoins:guidebook"]),
-                ],
+                "groups": [{"items": ["minecoins:tablet"]}],
             },
         ],
     },
@@ -337,6 +334,7 @@ for name, pattern, keys, count in RECIPES:
         "minecraft:recipe_shaped": {
             "description": {"identifier": f"minecoins:{name}"},
             "tags": ["crafting_table"],
+            "unlock": {"context": "AlwaysUnlocked"},
             "pattern": pattern,
             "key": {k: {"item": v} for k, v in keys.items()},
             "result": {"item": f"minecoins:{name}", "count": count},

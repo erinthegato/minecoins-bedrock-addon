@@ -71,97 +71,97 @@
     },
     "permutations": [
       {
-        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == false",
+        "condition": "q.block_state('minecoins:north') == false && q.block_state('minecoins:south') == false && q.block_state('minecoins:east') == false && q.block_state('minecoins:west') == false",
         "components": {
           "minecraft:geometry": "geometry.mcn_power_cable_0"
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == false",
+        "condition": "q.block_state('minecoins:north') == true && q.block_state('minecoins:south') == false && q.block_state('minecoins:east') == false && q.block_state('minecoins:west') == false",
         "components": {
           "minecraft:geometry": "geometry.mcn_power_cable_1"
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == false",
+        "condition": "q.block_state('minecoins:north') == false && q.block_state('minecoins:south') == true && q.block_state('minecoins:east') == false && q.block_state('minecoins:west') == false",
         "components": {
           "minecraft:geometry": "geometry.mcn_power_cable_2"
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == false",
+        "condition": "q.block_state('minecoins:north') == true && q.block_state('minecoins:south') == true && q.block_state('minecoins:east') == false && q.block_state('minecoins:west') == false",
         "components": {
           "minecraft:geometry": "geometry.mcn_power_cable_3"
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == false",
+        "condition": "q.block_state('minecoins:north') == false && q.block_state('minecoins:south') == false && q.block_state('minecoins:east') == true && q.block_state('minecoins:west') == false",
         "components": {
           "minecraft:geometry": "geometry.mcn_power_cable_4"
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == false",
+        "condition": "q.block_state('minecoins:north') == true && q.block_state('minecoins:south') == false && q.block_state('minecoins:east') == true && q.block_state('minecoins:west') == false",
         "components": {
           "minecraft:geometry": "geometry.mcn_power_cable_5"
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == false",
+        "condition": "q.block_state('minecoins:north') == false && q.block_state('minecoins:south') == true && q.block_state('minecoins:east') == true && q.block_state('minecoins:west') == false",
         "components": {
           "minecraft:geometry": "geometry.mcn_power_cable_6"
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == false",
+        "condition": "q.block_state('minecoins:north') == true && q.block_state('minecoins:south') == true && q.block_state('minecoins:east') == true && q.block_state('minecoins:west') == false",
         "components": {
           "minecraft:geometry": "geometry.mcn_power_cable_7"
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == true",
+        "condition": "q.block_state('minecoins:north') == false && q.block_state('minecoins:south') == false && q.block_state('minecoins:east') == false && q.block_state('minecoins:west') == true",
         "components": {
           "minecraft:geometry": "geometry.mcn_power_cable_8"
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == true",
+        "condition": "q.block_state('minecoins:north') == true && q.block_state('minecoins:south') == false && q.block_state('minecoins:east') == false && q.block_state('minecoins:west') == true",
         "components": {
           "minecraft:geometry": "geometry.mcn_power_cable_9"
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == true",
+        "condition": "q.block_state('minecoins:north') == false && q.block_state('minecoins:south') == true && q.block_state('minecoins:east') == false && q.block_state('minecoins:west') == true",
         "components": {
           "minecraft:geometry": "geometry.mcn_power_cable_10"
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == true",
+        "condition": "q.block_state('minecoins:north') == true && q.block_state('minecoins:south') == true && q.block_state('minecoins:east') == false && q.block_state('minecoins:west') == true",
         "components": {
           "minecraft:geometry": "geometry.mcn_power_cable_11"
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == true",
+        "condition": "q.block_state('minecoins:north') == false && q.block_state('minecoins:south') == false && q.block_state('minecoins:east') == true && q.block_state('minecoins:west') == true",
         "components": {
           "minecraft:geometry": "geometry.mcn_power_cable_12"
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == true",
+        "condition": "q.block_state('minecoins:north') == true && q.block_state('minecoins:south') == false && q.block_state('minecoins:east') == true && q.block_state('minecoins:west') == true",
         "components": {
           "minecraft:geometry": "geometry.mcn_power_cable_13"
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == true",
+        "condition": "q.block_state('minecoins:north') == false && q.block_state('minecoins:south') == true && q.block_state('minecoins:east') == true && q.block_state('minecoins:west') == true",
         "components": {
           "minecraft:geometry": "geometry.mcn_power_cable_14"
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == true",
+        "condition": "q.block_state('minecoins:north') == true && q.block_state('minecoins:south') == true && q.block_state('minecoins:east') == true && q.block_state('minecoins:west') == true",
         "components": {
           "minecraft:geometry": "geometry.mcn_power_cable_15"
         }

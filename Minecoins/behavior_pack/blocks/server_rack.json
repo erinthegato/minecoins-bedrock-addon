@@ -71,7 +71,7 @@
     },
     "permutations": [
       {
-        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == false",
+        "condition": "q.block_state('minecoins:north') == false && q.block_state('minecoins:south') == false && q.block_state('minecoins:east') == false && q.block_state('minecoins:west') == false",
         "components": {
           "minecraft:geometry": "geometry.mcn_server_rack_0",
           "minecraft:collision_box": {
@@ -101,7 +101,7 @@
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == false",
+        "condition": "q.block_state('minecoins:north') == true && q.block_state('minecoins:south') == false && q.block_state('minecoins:east') == false && q.block_state('minecoins:west') == false",
         "components": {
           "minecraft:geometry": "geometry.mcn_server_rack_1",
           "minecraft:collision_box": {
@@ -131,7 +131,7 @@
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == false",
+        "condition": "q.block_state('minecoins:north') == false && q.block_state('minecoins:south') == true && q.block_state('minecoins:east') == false && q.block_state('minecoins:west') == false",
         "components": {
           "minecraft:geometry": "geometry.mcn_server_rack_2",
           "minecraft:collision_box": {
@@ -161,7 +161,7 @@
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == false",
+        "condition": "q.block_state('minecoins:north') == true && q.block_state('minecoins:south') == true && q.block_state('minecoins:east') == false && q.block_state('minecoins:west') == false",
         "components": {
           "minecraft:geometry": "geometry.mcn_server_rack_3",
           "minecraft:collision_box": {
@@ -191,7 +191,7 @@
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == false",
+        "condition": "q.block_state('minecoins:north') == false && q.block_state('minecoins:south') == false && q.block_state('minecoins:east') == true && q.block_state('minecoins:west') == false",
         "components": {
           "minecraft:geometry": "geometry.mcn_server_rack_4",
           "minecraft:collision_box": {
@@ -221,7 +221,7 @@
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == false",
+        "condition": "q.block_state('minecoins:north') == true && q.block_state('minecoins:south') == false && q.block_state('minecoins:east') == true && q.block_state('minecoins:west') == false",
         "components": {
           "minecraft:geometry": "geometry.mcn_server_rack_5",
           "minecraft:collision_box": {
@@ -251,7 +251,7 @@
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == false",
+        "condition": "q.block_state('minecoins:north') == false && q.block_state('minecoins:south') == true && q.block_state('minecoins:east') == true && q.block_state('minecoins:west') == false",
         "components": {
           "minecraft:geometry": "geometry.mcn_server_rack_6",
           "minecraft:collision_box": {
@@ -281,7 +281,7 @@
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == false",
+        "condition": "q.block_state('minecoins:north') == true && q.block_state('minecoins:south') == true && q.block_state('minecoins:east') == true && q.block_state('minecoins:west') == false",
         "components": {
           "minecraft:geometry": "geometry.mcn_server_rack_7",
           "minecraft:collision_box": {
@@ -311,7 +311,7 @@
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == true",
+        "condition": "q.block_state('minecoins:north') == false && q.block_state('minecoins:south') == false && q.block_state('minecoins:east') == false && q.block_state('minecoins:west') == true",
         "components": {
           "minecraft:geometry": "geometry.mcn_server_rack_8",
           "minecraft:collision_box": {
@@ -341,7 +341,7 @@
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == true",
+        "condition": "q.block_state('minecoins:north') == true && q.block_state('minecoins:south') == false && q.block_state('minecoins:east') == false && q.block_state('minecoins:west') == true",
         "components": {
           "minecraft:geometry": "geometry.mcn_server_rack_9",
           "minecraft:collision_box": {
@@ -371,7 +371,7 @@
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == true",
+        "condition": "q.block_state('minecoins:north') == false && q.block_state('minecoins:south') == true && q.block_state('minecoins:east') == false && q.block_state('minecoins:west') == true",
         "components": {
           "minecraft:geometry": "geometry.mcn_server_rack_10",
           "minecraft:collision_box": {
@@ -401,7 +401,7 @@
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == true",
+        "condition": "q.block_state('minecoins:north') == true && q.block_state('minecoins:south') == true && q.block_state('minecoins:east') == false && q.block_state('minecoins:west') == true",
         "components": {
           "minecraft:geometry": "geometry.mcn_server_rack_11",
           "minecraft:collision_box": {
@@ -431,7 +431,7 @@
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == true",
+        "condition": "q.block_state('minecoins:north') == false && q.block_state('minecoins:south') == false && q.block_state('minecoins:east') == true && q.block_state('minecoins:west') == true",
         "components": {
           "minecraft:geometry": "geometry.mcn_server_rack_12",
           "minecraft:collision_box": {
@@ -461,7 +461,7 @@
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == true",
+        "condition": "q.block_state('minecoins:north') == true && q.block_state('minecoins:south') == false && q.block_state('minecoins:east') == true && q.block_state('minecoins:west') == true",
         "components": {
           "minecraft:geometry": "geometry.mcn_server_rack_13",
           "minecraft:collision_box": {
@@ -491,7 +491,7 @@
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == true",
+        "condition": "q.block_state('minecoins:north') == false && q.block_state('minecoins:south') == true && q.block_state('minecoins:east') == true && q.block_state('minecoins:west') == true",
         "components": {
           "minecraft:geometry": "geometry.mcn_server_rack_14",
           "minecraft:collision_box": {
@@ -521,7 +521,7 @@
         }
       },
       {
-        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == true",
+        "condition": "q.block_state('minecoins:north') == true && q.block_state('minecoins:south') == true && q.block_state('minecoins:east') == true && q.block_state('minecoins:west') == true",
         "components": {
           "minecraft:geometry": "geometry.mcn_server_rack_15",
           "minecraft:collision_box": {

@@ -45,15 +45,6 @@
             "items": [
               "minecoins:tablet"
             ]
-          },
-          {
-            "group_identifier": {
-              "icon": "minecoins:guidebook",
-              "name": "minecoins:itemGroup.name.guide"
-            },
-            "items": [
-              "minecoins:guidebook"
-            ]
           }
         ]
       }
