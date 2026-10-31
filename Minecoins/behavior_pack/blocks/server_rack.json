@@ -8,7 +8,6 @@
       }
     },
     "components": {
-      "minecraft:geometry": "minecraft:geometry.full_block",
       "minecraft:material_instances": {
         "*": {
           "texture": "mcn_server_rack",
@@ -24,7 +23,32 @@
         "explosion_resistance": 6
       },
       "minecraft:map_color": "#23252c",
-      "minecraft:light_emission": 3
+      "minecraft:light_emission": 3,
+      "minecraft:geometry": "geometry.mcn_server_rack",
+      "minecraft:collision_box": {
+        "origin": [
+          -8,
+          0,
+          -8
+        ],
+        "size": [
+          16,
+          8,
+          16
+        ]
+      },
+      "minecraft:selection_box": {
+        "origin": [
+          -8,
+          0,
+          -8
+        ],
+        "size": [
+          16,
+          8,
+          16
+        ]
+      }
     }
   }
 }

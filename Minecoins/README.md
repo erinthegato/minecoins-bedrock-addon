@@ -32,9 +32,13 @@ server/radio infrastructure it depends on.
 - Enchanted books arrive with a random enchantment and level.
 
 ### Power + cooling (server infrastructure)
-- **Solar panel** — 25 EU/s in daylight. **Battery** — 5000 EU each.
-  **Power cable** — connects the grid (BFS over touching blocks, up to ~700).
-  **Cooling unit** — 3 EU/s. **Server rack** — 8 EU/s.
+- **Solar panel** — 25 EU/s in daylight, a flat 1-pixel plate like leaf litter
+  (walkable, stack it against walls, place it flush on floors).
+- **Battery** — 5000 EU each. **Cooling unit** — 3 EU/s. **Server rack** — 8 EU/s.
+  All three are half-height blocks: half-block model and half-block hitbox.
+- **Power cable** — a pipe that connects like a fence: it grows an arm toward
+  any neighbouring cable or machine and retracts when that neighbour is removed.
+  It still joins the grid by touching blocks (BFS, up to ~700).
 - A rack is online only when its grid has ≥1 cooling unit **and** stored energy.
   Energy accrues while the chunks are unloaded (rate × elapsed time, capped 6 h).
 - Digital storage needs an online rack within 48 blocks.

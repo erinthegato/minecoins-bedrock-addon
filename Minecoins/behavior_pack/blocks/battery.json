@@ -8,7 +8,6 @@
       }
     },
     "components": {
-      "minecraft:geometry": "minecraft:geometry.full_block",
       "minecraft:material_instances": {
         "*": {
           "texture": "mcn_battery",
@@ -24,7 +23,32 @@
         "explosion_resistance": 6
       },
       "minecraft:map_color": "#2c3a30",
-      "minecraft:light_emission": 2
+      "minecraft:light_emission": 2,
+      "minecraft:geometry": "geometry.mcn_battery",
+      "minecraft:collision_box": {
+        "origin": [
+          -8,
+          0,
+          -8
+        ],
+        "size": [
+          16,
+          8,
+          16
+        ]
+      },
+      "minecraft:selection_box": {
+        "origin": [
+          -8,
+          0,
+          -8
+        ],
+        "size": [
+          16,
+          8,
+          16
+        ]
+      }
     }
   }
 }

@@ -1,0 +1,1357 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.mcn_server_rack",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -8,
+                0,
+                -8
+              ],
+              "size": [
+                16,
+                8,
+                16
+              ],
+              "uv": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_battery",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -8,
+                0,
+                -8
+              ],
+              "size": [
+                16,
+                8,
+                16
+              ],
+              "uv": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_cooling_unit",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -8,
+                0,
+                -8
+              ],
+              "size": [
+                16,
+                8,
+                16
+              ],
+              "uv": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_solar_panel",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -8,
+                0,
+                -8
+              ],
+              "size": [
+                16,
+                1,
+                16
+              ],
+              "uv": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_power_cable_0",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -2,
+                0,
+                -2
+              ],
+              "size": [
+                4,
+                16,
+                4
+              ],
+              "uv": [
+                6,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_power_cable_1",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -2,
+                0,
+                -2
+              ],
+              "size": [
+                4,
+                16,
+                4
+              ],
+              "uv": [
+                6,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                6,
+                -8
+              ],
+              "size": [
+                4,
+                4,
+                6
+              ],
+              "uv": [
+                5,
+                2
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_power_cable_2",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -2,
+                0,
+                -2
+              ],
+              "size": [
+                4,
+                16,
+                4
+              ],
+              "uv": [
+                6,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                6,
+                2
+              ],
+              "size": [
+                4,
+                4,
+                6
+              ],
+              "uv": [
+                5,
+                2
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_power_cable_3",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -2,
+                0,
+                -2
+              ],
+              "size": [
+                4,
+                16,
+                4
+              ],
+              "uv": [
+                6,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                6,
+                -8
+              ],
+              "size": [
+                4,
+                4,
+                6
+              ],
+              "uv": [
+                5,
+                2
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                6,
+                2
+              ],
+              "size": [
+                4,
+                4,
+                6
+              ],
+              "uv": [
+                5,
+                2
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_power_cable_4",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -2,
+                0,
+                -2
+              ],
+              "size": [
+                4,
+                16,
+                4
+              ],
+              "uv": [
+                6,
+                0
+              ]
+            },
+            {
+              "origin": [
+                2,
+                6,
+                -2
+              ],
+              "size": [
+                6,
+                4,
+                4
+              ],
+              "uv": [
+                2,
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_power_cable_5",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -2,
+                0,
+                -2
+              ],
+              "size": [
+                4,
+                16,
+                4
+              ],
+              "uv": [
+                6,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                6,
+                -8
+              ],
+              "size": [
+                4,
+                4,
+                6
+              ],
+              "uv": [
+                5,
+                2
+              ]
+            },
+            {
+              "origin": [
+                2,
+                6,
+                -2
+              ],
+              "size": [
+                6,
+                4,
+                4
+              ],
+              "uv": [
+                2,
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_power_cable_6",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -2,
+                0,
+                -2
+              ],
+              "size": [
+                4,
+                16,
+                4
+              ],
+              "uv": [
+                6,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                6,
+                2
+              ],
+              "size": [
+                4,
+                4,
+                6
+              ],
+              "uv": [
+                5,
+                2
+              ]
+            },
+            {
+              "origin": [
+                2,
+                6,
+                -2
+              ],
+              "size": [
+                6,
+                4,
+                4
+              ],
+              "uv": [
+                2,
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_power_cable_7",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -2,
+                0,
+                -2
+              ],
+              "size": [
+                4,
+                16,
+                4
+              ],
+              "uv": [
+                6,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                6,
+                -8
+              ],
+              "size": [
+                4,
+                4,
+                6
+              ],
+              "uv": [
+                5,
+                2
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                6,
+                2
+              ],
+              "size": [
+                4,
+                4,
+                6
+              ],
+              "uv": [
+                5,
+                2
+              ]
+            },
+            {
+              "origin": [
+                2,
+                6,
+                -2
+              ],
+              "size": [
+                6,
+                4,
+                4
+              ],
+              "uv": [
+                2,
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_power_cable_8",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -2,
+                0,
+                -2
+              ],
+              "size": [
+                4,
+                16,
+                4
+              ],
+              "uv": [
+                6,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -8,
+                6,
+                -2
+              ],
+              "size": [
+                6,
+                4,
+                4
+              ],
+              "uv": [
+                2,
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_power_cable_9",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -2,
+                0,
+                -2
+              ],
+              "size": [
+                4,
+                16,
+                4
+              ],
+              "uv": [
+                6,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                6,
+                -8
+              ],
+              "size": [
+                4,
+                4,
+                6
+              ],
+              "uv": [
+                5,
+                2
+              ]
+            },
+            {
+              "origin": [
+                -8,
+                6,
+                -2
+              ],
+              "size": [
+                6,
+                4,
+                4
+              ],
+              "uv": [
+                2,
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_power_cable_10",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -2,
+                0,
+                -2
+              ],
+              "size": [
+                4,
+                16,
+                4
+              ],
+              "uv": [
+                6,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                6,
+                2
+              ],
+              "size": [
+                4,
+                4,
+                6
+              ],
+              "uv": [
+                5,
+                2
+              ]
+            },
+            {
+              "origin": [
+                -8,
+                6,
+                -2
+              ],
+              "size": [
+                6,
+                4,
+                4
+              ],
+              "uv": [
+                2,
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_power_cable_11",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -2,
+                0,
+                -2
+              ],
+              "size": [
+                4,
+                16,
+                4
+              ],
+              "uv": [
+                6,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                6,
+                -8
+              ],
+              "size": [
+                4,
+                4,
+                6
+              ],
+              "uv": [
+                5,
+                2
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                6,
+                2
+              ],
+              "size": [
+                4,
+                4,
+                6
+              ],
+              "uv": [
+                5,
+                2
+              ]
+            },
+            {
+              "origin": [
+                -8,
+                6,
+                -2
+              ],
+              "size": [
+                6,
+                4,
+                4
+              ],
+              "uv": [
+                2,
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_power_cable_12",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -2,
+                0,
+                -2
+              ],
+              "size": [
+                4,
+                16,
+                4
+              ],
+              "uv": [
+                6,
+                0
+              ]
+            },
+            {
+              "origin": [
+                2,
+                6,
+                -2
+              ],
+              "size": [
+                6,
+                4,
+                4
+              ],
+              "uv": [
+                2,
+                5
+              ]
+            },
+            {
+              "origin": [
+                -8,
+                6,
+                -2
+              ],
+              "size": [
+                6,
+                4,
+                4
+              ],
+              "uv": [
+                2,
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_power_cable_13",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -2,
+                0,
+                -2
+              ],
+              "size": [
+                4,
+                16,
+                4
+              ],
+              "uv": [
+                6,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                6,
+                -8
+              ],
+              "size": [
+                4,
+                4,
+                6
+              ],
+              "uv": [
+                5,
+                2
+              ]
+            },
+            {
+              "origin": [
+                2,
+                6,
+                -2
+              ],
+              "size": [
+                6,
+                4,
+                4
+              ],
+              "uv": [
+                2,
+                5
+              ]
+            },
+            {
+              "origin": [
+                -8,
+                6,
+                -2
+              ],
+              "size": [
+                6,
+                4,
+                4
+              ],
+              "uv": [
+                2,
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_power_cable_14",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -2,
+                0,
+                -2
+              ],
+              "size": [
+                4,
+                16,
+                4
+              ],
+              "uv": [
+                6,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                6,
+                2
+              ],
+              "size": [
+                4,
+                4,
+                6
+              ],
+              "uv": [
+                5,
+                2
+              ]
+            },
+            {
+              "origin": [
+                2,
+                6,
+                -2
+              ],
+              "size": [
+                6,
+                4,
+                4
+              ],
+              "uv": [
+                2,
+                5
+              ]
+            },
+            {
+              "origin": [
+                -8,
+                6,
+                -2
+              ],
+              "size": [
+                6,
+                4,
+                4
+              ],
+              "uv": [
+                2,
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": {
+        "identifier": "geometry.mcn_power_cable_15",
+        "texture_width": 16,
+        "texture_height": 16,
+        "visible_bounds_width": 2,
+        "visible_bounds_height": 1.5,
+        "visible_bounds_offset": [
+          0,
+          0.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "block",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -2,
+                0,
+                -2
+              ],
+              "size": [
+                4,
+                16,
+                4
+              ],
+              "uv": [
+                6,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                6,
+                -8
+              ],
+              "size": [
+                4,
+                4,
+                6
+              ],
+              "uv": [
+                5,
+                2
+              ]
+            },
+            {
+              "origin": [
+                -2,
+                6,
+                2
+              ],
+              "size": [
+                4,
+                4,
+                6
+              ],
+              "uv": [
+                5,
+                2
+              ]
+            },
+            {
+              "origin": [
+                2,
+                6,
+                -2
+              ],
+              "size": [
+                6,
+                4,
+                4
+              ],
+              "uv": [
+                2,
+                5
+              ]
+            },
+            {
+              "origin": [
+                -8,
+                6,
+                -2
+              ],
+              "size": [
+                6,
+                4,
+                4
+              ],
+              "uv": [
+                2,
+                5
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

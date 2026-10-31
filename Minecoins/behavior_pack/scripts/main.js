@@ -7,7 +7,7 @@
  * - Underground: no radio signal, must run LAN cable from a tower
  * - Catalog: buy nearly every obtainable item, diamond tier most expensive
  */
-import { world, system, ItemStack, EquipmentSlot } from "@minecraft/server";
+import { world, system, ItemStack, EquipmentSlot, BlockPermutation } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
 
 const COIN_MS = 300000; // 5 real minutes
@@ -28,6 +28,33 @@ const B = {
 const TABLET = "minecoins:tablet";
 const GRID_BLOCKS = [B.cable, B.panel, B.battery, B.cooling, B.rack];
 const NODE_BLOCKS = [B.tower, B.extender];
+
+/* Fence-style pipe connections: the block state drives which arms render. */
+const PIPE_LINKS = [
+  ["minecoins:north", 0, 0, -1],
+  ["minecoins:south", 0, 0, 1],
+  ["minecoins:east", 1, 0, 0],
+  ["minecoins:west", -1, 0, 0],
+];
+const PIPE_CONNECTS = new Set([B.cable, B.panel, B.battery, B.cooling, B.rack]);
+
+function refreshPipe(dim, loc) {
+  const b = dim.getBlock(loc);
+  if (!b || b.typeId !== B.cable) return;
+  const states = {};
+  for (const [state, dx, dy, dz] of PIPE_LINKS) {
+    const n = dim.getBlock({ x: loc.x + dx, y: loc.y + dy, z: loc.z + dz });
+    states[state] = !!n && PIPE_CONNECTS.has(n.typeId);
+  }
+  try { b.setPermutation(BlockPermutation.resolve(B.cable, states)); } catch { /* ignore */ }
+}
+
+function refreshAround(dim, loc) {
+  refreshPipe(dim, loc);
+  for (const o of [[0, 0, -1], [0, 0, 1], [1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0]]) {
+    refreshPipe(dim, { x: loc.x + o[0], y: loc.y + o[1], z: loc.z + o[2] });
+  }
+}
 
 const P_NODES = "mc:nodes";
 const P_RACKS = "mc:racks";
@@ -213,6 +240,7 @@ world.afterEvents.playerPlaceBlock.subscribe((ev) => {
     else ev.player.sendMessage("§b[Radio] §fExtender linked §7· needs a tower within 1500 blocks");
   }
   if (id === B.rack) addEntry(P_RACKS, e);
+  if (GRID_BLOCKS.includes(id)) refreshAround(ev.block.dimension, ev.block.location);
 });
 
 world.afterEvents.playerBreakBlock.subscribe((ev) => {
@@ -225,6 +253,7 @@ world.afterEvents.playerBreakBlock.subscribe((ev) => {
   };
   if (NODE_BLOCKS.includes(id)) removeEntry(P_NODES, e);
   if (id === B.rack) removeEntry(P_RACKS, e);
+  if (GRID_BLOCKS.includes(id)) refreshAround(ev.block.dimension, ev.block.location);
 });
 
 /* ------------------------------------------------------------------ radio */

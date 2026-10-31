@@ -8,7 +8,6 @@
       }
     },
     "components": {
-      "minecraft:geometry": "minecraft:geometry.full_block",
       "minecraft:material_instances": {
         "*": {
           "texture": "mcn_solar_panel",
@@ -24,7 +23,32 @@
         "explosion_resistance": 6
       },
       "minecraft:map_color": "#1d3f6b",
-      "minecraft:light_emission": 0
+      "minecraft:light_emission": 0,
+      "minecraft:geometry": "geometry.mcn_solar_panel",
+      "minecraft:collision_box": {
+        "origin": [
+          -8,
+          0,
+          -8
+        ],
+        "size": [
+          16,
+          1,
+          16
+        ]
+      },
+      "minecraft:selection_box": {
+        "origin": [
+          -8,
+          0,
+          -8
+        ],
+        "size": [
+          16,
+          2,
+          16
+        ]
+      }
     }
   }
 }

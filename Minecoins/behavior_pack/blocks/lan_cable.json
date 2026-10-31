@@ -8,7 +8,6 @@
       }
     },
     "components": {
-      "minecraft:geometry": "minecraft:geometry.full_block",
       "minecraft:material_instances": {
         "*": {
           "texture": "mcn_lan_cable",
@@ -24,7 +23,8 @@
         "explosion_resistance": 6
       },
       "minecraft:map_color": "#c07a2c",
-      "minecraft:light_emission": 0
+      "minecraft:light_emission": 0,
+      "minecraft:geometry": "minecraft:geometry.full_block"
     }
   }
 }

@@ -36,30 +36,86 @@ BLOCKS = [
     ("lan_cable", "#c07a2c", 0.5, 0),
 ]
 
+HALF_BLOCKS = {"server_rack", "battery", "cooling_unit"}
+FLAT_BLOCKS = {"solar_panel"}
+PIPE_DIRECTIONS = [
+    ("north", (0, 0, -1), 1),
+    ("south", (0, 0, 1), 2),
+    ("east", (1, 0, 0), 4),
+    ("west", (-1, 0, 0), 8),
+]
+
+
+def pipe_cubes(mask):
+    """Fence-style pipe: centre post plus an arm per connected side."""
+    cubes = [{"origin": [-2, 0, -2], "size": [4, 16, 4], "uv": [6, 0]}]
+    if mask & 1:
+        cubes.append({"origin": [-2, 6, -8], "size": [4, 4, 6], "uv": [5, 2]})
+    if mask & 2:
+        cubes.append({"origin": [-2, 6, 2], "size": [4, 4, 6], "uv": [5, 2]})
+    if mask & 4:
+        cubes.append({"origin": [2, 6, -2], "size": [6, 4, 4], "uv": [2, 5]})
+    if mask & 8:
+        cubes.append({"origin": [-8, 6, -2], "size": [6, 4, 4], "uv": [2, 5]})
+    return cubes
+
+
 for name, colour, hardness, light in BLOCKS:
+    description = {
+        "identifier": f"minecoins:{name}",
+        "menu_category": {"category": "construction"},
+    }
+    components = {
+        "minecraft:material_instances": {
+            "*": {
+                "texture": f"mcn_{name}",
+                "render_method": "opaque",
+                "face_dimming": True,
+                "ambient_occlusion": True,
+            }
+        },
+        "minecraft:destructible_by_mining": {"seconds_to_destroy": hardness},
+        "minecraft:destructible_by_explosion": {"explosion_resistance": 6},
+        "minecraft:map_color": colour,
+        "minecraft:light_emission": light,
+    }
+    permutations = None
+    if name in HALF_BLOCKS:
+        # server hardware: half-height model and half-block hitbox
+        components["minecraft:geometry"] = f"geometry.mcn_{name}"
+        components["minecraft:collision_box"] = {"origin": [-8, 0, -8], "size": [16, 8, 16]}
+        components["minecraft:selection_box"] = {"origin": [-8, 0, -8], "size": [16, 8, 16]}
+    elif name in FLAT_BLOCKS:
+        # leaf-litter style plate: placeable flat, 1px collision
+        components["minecraft:geometry"] = f"geometry.mcn_{name}"
+        components["minecraft:collision_box"] = {"origin": [-8, 0, -8], "size": [16, 1, 16]}
+        components["minecraft:selection_box"] = {"origin": [-8, 0, -8], "size": [16, 2, 16]}
+    elif name == "power_cable":
+        description["states"] = {
+            f"minecoins:{d}": [False, True] for d, _o, _b in PIPE_DIRECTIONS
+        }
+        components["minecraft:geometry"] = "geometry.mcn_power_cable_0"
+        components["minecraft:collision_box"] = {"origin": [-2, 0, -2], "size": [4, 16, 4]}
+        components["minecraft:selection_box"] = {"origin": [-2, 0, -2], "size": [4, 16, 4]}
+        permutations = []
+        for mask in range(16):
+            condition = " and ".join(
+                f"q.block_state('minecoins:{d}') == {'true' if mask & bit else 'false'}"
+                for d, _o, bit in PIPE_DIRECTIONS
+            )
+            permutations.append({
+                "condition": condition,
+                "components": {"minecraft:geometry": f"geometry.mcn_power_cable_{mask}"},
+            })
+    else:
+        components["minecraft:geometry"] = "minecraft:geometry.full_block"
+
+    block_def = {"description": description, "components": components}
+    if permutations:
+        block_def["permutations"] = permutations
     write(os.path.join(BP, "blocks", f"{name}.json"), {
         "format_version": "1.21.0",
-        "minecraft:block": {
-            "description": {
-                "identifier": f"minecoins:{name}",
-                "menu_category": {"category": "construction"},
-            },
-            "components": {
-                "minecraft:geometry": "minecraft:geometry.full_block",
-                "minecraft:material_instances": {
-                    "*": {
-                        "texture": f"mcn_{name}",
-                        "render_method": "opaque",
-                        "face_dimming": True,
-                        "ambient_occlusion": True,
-                    }
-                },
-                "minecraft:destructible_by_mining": {"seconds_to_destroy": hardness},
-                "minecraft:destructible_by_explosion": {"explosion_resistance": 6},
-                "minecraft:map_color": colour,
-                "minecraft:light_emission": light,
-            },
-        },
+        "minecraft:block": block_def,
     })
 
 # ---------------------------------------------------------------- items
@@ -111,6 +167,39 @@ for name, pattern, keys, count in RECIPES:
             "result": {"item": f"minecoins:{name}", "count": count},
         },
     })
+
+# ---------------------------------------------------------------- models
+def geo(identifier, cubes):
+    return {
+        "description": {
+            "identifier": identifier,
+            "texture_width": 16,
+            "texture_height": 16,
+            "visible_bounds_width": 2,
+            "visible_bounds_height": 1.5,
+            "visible_bounds_offset": [0, 0.5, 0],
+        },
+        "bones": [{"name": "block", "pivot": [0, 0, 0], "cubes": cubes}],
+    }
+
+
+MODELS = []
+for name in ("server_rack", "battery", "cooling_unit"):
+    MODELS.append(geo(
+        f"geometry.mcn_{name}",
+        [{"origin": [-8, 0, -8], "size": [16, 8, 16], "uv": [0, 0]}],
+    ))
+MODELS.append(geo(
+    "geometry.mcn_solar_panel",
+    [{"origin": [-8, 0, -8], "size": [16, 1, 16], "uv": [0, 0]}],
+))
+for mask in range(16):
+    MODELS.append(geo(f"geometry.mcn_power_cable_{mask}", pipe_cubes(mask)))
+
+write(os.path.join(RP, "models", "blocks", "mcn_models.geo.json"), {
+    "format_version": "1.12.0",
+    "minecraft:geometry": MODELS,
+})
 
 # ---------------------------------------------------------------- manifests
 write(os.path.join(BP, "manifest.json"), {
