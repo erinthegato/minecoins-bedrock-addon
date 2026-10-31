@@ -19,6 +19,12 @@ window: start here, power grid, cooling and storage, radio and LAN, minecoins
 and the store. It works anywhere - no radio needed - and it is listed in the
 creative menu under both the **Items** and **Equipment** tabs.
 
+### Creative menu
+All nine blocks sit in a collapsible group, **Server Components**, at the end of
+the Construction tab. The tablet is in Equipment; the guide book is in both
+Equipment and Items. Group membership is declared on every block and item and
+repeated in `item_catalog/crafting_item_catalog.json`.
+
 ## Features
 
 ### Minecoins

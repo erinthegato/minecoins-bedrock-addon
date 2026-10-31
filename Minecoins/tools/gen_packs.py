@@ -14,7 +14,13 @@ UUID_BP_DATA = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02"
 UUID_BP_SCRIPT = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03"
 UUID_RP = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04"
 UUID_RP_RES = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05"
-VERSION = [1, 5, 0]
+VERSION = [1, 5, 1]
+
+# Creative menu: one collapsible group per tab. The same names are declared
+# on the block/item definitions and in item_catalog/crafting_item_catalog.json
+# so a block reaches its group whichever route Minecraft reads first.
+CATALOG_GROUP = "minecoins:itemGroup.name.server_components"
+GUIDE_GROUP = "minecoins:itemGroup.name.guide"
 
 
 def write(path, obj):
@@ -115,7 +121,7 @@ def pipe_cubes(mask):
 for name, colour, hardness, light in BLOCKS:
     description = {
         "identifier": f"minecoins:{name}",
-        "menu_category": {"category": "construction"},
+        "menu_category": {"category": "construction", "group": CATALOG_GROUP},
     }
     components = {
         "minecraft:material_instances": {
@@ -213,17 +219,17 @@ for name, colour, hardness, light in BLOCKS:
     if permutations:
         block_def["permutations"] = permutations
     write(os.path.join(BP, "blocks", f"{name}.json"), {
-        "format_version": "1.21.0",
+        "format_version": "1.21.60",
         "minecraft:block": block_def,
     })
 
 # ---------------------------------------------------------------- items
 write(os.path.join(BP, "items", "tablet.json"), {
-    "format_version": "1.21.0",
+    "format_version": "1.21.60",
     "minecraft:item": {
         "description": {
             "identifier": "minecoins:tablet",
-            "menu_category": {"category": "equipment", "group": "itemGroup.name.miscFood"},
+            "menu_category": {"category": "equipment"},
         },
         "components": {
             "minecraft:icon": {"textures": {"default": "mcn_tablet"}},
@@ -237,11 +243,11 @@ write(os.path.join(BP, "items", "tablet.json"), {
 
 # ---------------------------------------------------------------- guide book
 write(os.path.join(BP, "items", "guidebook.json"), {
-    "format_version": "1.21.0",
+    "format_version": "1.21.60",
     "minecraft:item": {
         "description": {
             "identifier": "minecoins:guidebook",
-            "menu_category": {"category": "items"},
+            "menu_category": {"category": "items", "group": GUIDE_GROUP},
         },
         "components": {
             "minecraft:icon": {"textures": {"default": "mcn_guidebook"}},
@@ -270,10 +276,6 @@ write(os.path.join(BP, "recipes", "guidebook.json"), {
 # skipped by the creative menu. The catalog lists every block explicitly in one
 # collapsible group. The guide book is listed twice on purpose - the user wants
 # it reachable from both the Items and the Equipment tab.
-CATALOG_GROUP = "minecoins:itemGroup.name.server_components"
-GUIDE_GROUP = "minecoins:itemGroup.name.guide"
-
-
 def group(icon, name, items):
     return {
         "group_identifier": {"icon": icon, "name": name},
@@ -282,7 +284,7 @@ def group(icon, name, items):
 
 
 write(os.path.join(BP, "item_catalog", "crafting_item_catalog.json"), {
-    "format_version": "1.21.0",
+    "format_version": "1.21.60",
     "minecraft:crafting_items_catalog": {
         "categories": [
             {
@@ -297,8 +299,11 @@ write(os.path.join(BP, "item_catalog", "crafting_item_catalog.json"), {
             },
             {
                 "category_name": "equipment",
-                "groups": [group("minecoins:guidebook", GUIDE_GROUP,
-                                 ["minecoins:guidebook"])],
+                "groups": [
+                    {"items": ["minecoins:tablet"]},
+                    group("minecoins:guidebook", GUIDE_GROUP,
+                          ["minecoins:guidebook"]),
+                ],
             },
         ],
     },

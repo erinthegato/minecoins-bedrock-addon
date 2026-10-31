@@ -1,11 +1,10 @@
 {
-  "format_version": "1.21.0",
+  "format_version": "1.21.60",
   "minecraft:item": {
     "description": {
       "identifier": "minecoins:tablet",
       "menu_category": {
-        "category": "equipment",
-        "group": "itemGroup.name.miscFood"
+        "category": "equipment"
       }
     },
     "components": {

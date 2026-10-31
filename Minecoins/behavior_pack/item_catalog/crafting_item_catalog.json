@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.0",
+  "format_version": "1.21.60",
   "minecraft:crafting_items_catalog": {
     "categories": [
       {
@@ -41,6 +41,11 @@
       {
         "category_name": "equipment",
         "groups": [
+          {
+            "items": [
+              "minecoins:tablet"
+            ]
+          },
           {
             "group_identifier": {
               "icon": "minecoins:guidebook",
