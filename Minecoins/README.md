@@ -3,6 +3,11 @@
 A single addon that adds a minecoin economy, a digital storage network, and the
 server/radio infrastructure it depends on.
 
+> **Disclaimer:** This cannot generate Minecraft's paid, actual currency.
+> Minecoins here is a fictional in-game currency belonging to this addon - it
+> has no connection to, and cannot produce, Minecraft's purchasable Minecoins or
+> any real money.
+
 ## Install
 
 - **Easiest:** double-click `Minecoins.mcaddon` (or open it with Minecraft).
