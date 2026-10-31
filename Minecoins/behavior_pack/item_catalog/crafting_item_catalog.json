@@ -7,8 +7,8 @@
         "groups": [
           {
             "group_identifier": {
-              "icon": "minecoins:itemGroup.name.infrastructure",
-              "name": "minecoins:itemGroup.name.infrastructure"
+              "icon": "minecoins:itemGroup.name.server_components",
+              "name": "minecoins:itemGroup.name.server_components"
             },
             "items": [
               "minecoins:power_cable",

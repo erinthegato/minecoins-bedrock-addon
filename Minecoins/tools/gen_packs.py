@@ -14,7 +14,7 @@ UUID_BP_DATA = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02"
 UUID_BP_SCRIPT = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03"
 UUID_RP = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04"
 UUID_RP_RES = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05"
-VERSION = [1, 4, 0]
+VERSION = [1, 4, 1]
 
 
 def write(path, obj):
@@ -255,7 +255,7 @@ write(os.path.join(BP, "recipes", "guidebook.json"), {
 # skipped by the creative menu. The catalog lists every block explicitly in one
 # collapsible group. The guide book is listed twice on purpose - the user wants
 # it reachable from both the Items and the Equipment tab.
-CATALOG_GROUP = "minecoins:itemGroup.name.infrastructure"
+CATALOG_GROUP = "minecoins:itemGroup.name.server_components"
 GUIDE_GROUP = "minecoins:itemGroup.name.guide"
 
 
@@ -376,7 +376,7 @@ BLOCK_NAMES = {
 }
 lang = [f"tile.minecoins:{n}.name={label}" for n, label in BLOCK_NAMES.items()]
 lang.append("item.minecoins:tablet.name=Minecoins Tablet")
-lang.append(f"{CATALOG_GROUP}=Minecoins")
+lang.append(f"{CATALOG_GROUP}=Server Components")
 lang.append(f"{GUIDE_GROUP}=Minecoins Guide")
 lang.append("item.minecoins:guidebook.name=Minecoins Guide")
 os.makedirs(os.path.join(RP, "texts"), exist_ok=True)
