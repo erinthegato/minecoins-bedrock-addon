@@ -7,7 +7,7 @@
         "groups": [
           {
             "group_identifier": {
-              "icon": "minecoins:itemGroup.name.server_components",
+              "icon": "minecoins:server_rack",
               "name": "minecoins:itemGroup.name.server_components"
             },
             "items": [

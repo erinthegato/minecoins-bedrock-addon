@@ -272,7 +272,7 @@ write(os.path.join(BP, "item_catalog", "crafting_item_catalog.json"), {
         "categories": [
             {
                 "category_name": "construction",
-                "groups": [group(CATALOG_GROUP, CATALOG_GROUP,
+                "groups": [group("minecoins:server_rack", CATALOG_GROUP,
                                  [f"minecoins:{n}" for n, *_ in BLOCKS])],
             },
             {
