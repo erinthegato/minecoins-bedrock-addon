@@ -1,0 +1,10 @@
+tile.minecoins:power_cable.name=Power Cable
+tile.minecoins:solar_panel.name=Solar Panel
+tile.minecoins:battery.name=Battery
+tile.minecoins:cooling_unit.name=Cooling Unit
+tile.minecoins:server_rack.name=Server Rack
+tile.minecoins:radio_tower.name=Radio Tower
+tile.minecoins:radio_extender.name=Radio Extender
+tile.minecoins:lan_cable.name=LAN Cable
+tile.minecoins:monitor.name=Monitor
+item.minecoins:tablet.name=Minecoins Tablet

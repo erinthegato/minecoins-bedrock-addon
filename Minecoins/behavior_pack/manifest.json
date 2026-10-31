@@ -6,7 +6,7 @@
     "uuid": "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a01",
     "version": [
       1,
-      0,
+      1,
       0
     ],
     "min_engine_version": [
@@ -21,7 +21,7 @@
       "uuid": "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02",
       "version": [
         1,
-        0,
+        1,
         0
       ]
     },
@@ -31,7 +31,7 @@
       "uuid": "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03",
       "version": [
         1,
-        0,
+        1,
         0
       ],
       "entry": "scripts/main.js"
@@ -50,7 +50,7 @@
       "uuid": "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04",
       "version": [
         1,
-        0,
+        1,
         0
       ]
     }
@@ -61,7 +61,7 @@
     ],
     "generated_with": {
       "minecoins": [
-        "1.0.0"
+        "1.1.0"
       ]
     }
   }

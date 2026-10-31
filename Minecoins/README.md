@@ -34,11 +34,16 @@ server/radio infrastructure it depends on.
 ### Power + cooling (server infrastructure)
 - **Solar panel** — 25 EU/s in daylight, a flat 1-pixel plate like leaf litter
   (walkable, stack it against walls, place it flush on floors).
-- **Battery** — 5000 EU each. **Cooling unit** — 3 EU/s. **Server rack** — 8 EU/s.
-  All three are half-height blocks: half-block model and half-block hitbox.
+- **Battery** — 5000 EU each. **Cooling unit** — 3 EU/s, both half-height blocks
+  (half-block model and half-block hitbox).
+- **Server rack** — 8 EU/s and a full-height wall panel: it mounts flush against
+  the side you place it on and turns to face you.
 - **Power cable** — a pipe that connects like a fence: it grows an arm toward
   any neighbouring cable or machine and retracts when that neighbour is removed.
   It still joins the grid by touching blocks (BFS, up to ~700).
+- **LAN cable** — the same fence-style pipe, but it only connects to other
+  LAN cable, radio towers and extenders, so underground runs read as a
+  separate network.
 - A rack is online only when its grid has ≥1 cooling unit **and** stored energy.
   Energy accrues while the chunks are unloaded (rate × elapsed time, capped 6 h).
 - Digital storage needs an online rack within 48 blocks.
@@ -59,9 +64,26 @@ server/radio infrastructure it depends on.
 ### Clickable GUIs
 - Every menu is button-driven: tap a button and it plays the pressure-plate
   click (`random.click`). Opening a menu, depositing and withdrawing all click.
-- **Right-click a server rack** to open digital storage on the spot, or a
-  **radio tower** for network status — no tablet or signal needed for the rack
-  you are standing at. Sneak to place blocks against them instead.
+- The OS is **mineOS-09**, modelled on a classic 9x desktop: teal-tinted body,
+  a `File  Edit  View  Go  Favorites  Help` menu bar, a `Start` status bar with
+  a live clock, and six desktop icons (My Computer, Network Neighborhood,
+  Minecoins.exe, Store, My Documents, Shut Down) using custom 32px icons.
+  Windows are named like the reference: `Exploring — C:\MINECOINS\STORE`,
+  `System Properties`, `My Documents — …`, `Notepad — LEDGER.DAT`.
+  Bedrock draws the form frame and buttons itself, so the window body is themed
+  rather than pixel-reskinned.
+- **Manipulable pointer**: the desktop draws a cursor (`▸`) over a 3-column
+  icon grid. Left/Up/Down/Right buttons move it, Open launches whatever it sits
+  on, and Start lists the programs. The pointer position is saved per player, so
+  it is where you left it next time the tablet opens.
+- **Right-click a server rack** for digital storage, a **radio tower** for
+  network status, or a **monitor** for the full desktop — a monitor needs the
+  same radio/LAN link as the tablet. Sneak to place blocks against them.
+
+### Monitor
+- Wall-mounted terminal with item-frame style geometry: a 14x14 panel 1 pixel
+  deep, rotated to the wall you place it on, with a 2-light-pixel glow tip.
+- Opening it shows the same Minecoins 95 desktop as the tablet.
 
 ## Crafting
 
@@ -76,6 +98,7 @@ server/radio infrastructure it depends on.
 | Radio extender | copper–redstone–copper |
 | LAN cable ×4 | checker of copper ingot and string |
 | Minecoins Tablet | iron corners, glass sides, redstone centre |
+| Monitor | iron corners, glass frame, redstone centre |
 
 ## Quick start
 

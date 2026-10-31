@@ -5,6 +5,14 @@
       "identifier": "minecoins:server_rack",
       "menu_category": {
         "category": "construction"
+      },
+      "traits": {
+        "minecraft:placement_direction": {
+          "enabled_states": [
+            "minecraft:cardinal_direction"
+          ],
+          "y_rotation_offset": 180
+        }
       }
     },
     "components": {
@@ -24,7 +32,7 @@
       },
       "minecraft:map_color": "#23252c",
       "minecraft:light_emission": 3,
-      "minecraft:geometry": "geometry.mcn_server_rack",
+      "minecraft:geometry": "geometry.mcn_server_rack_north",
       "minecraft:collision_box": {
         "origin": [
           -8,
@@ -33,8 +41,8 @@
         ],
         "size": [
           16,
-          8,
-          16
+          16,
+          5
         ]
       },
       "minecraft:selection_box": {
@@ -45,10 +53,132 @@
         ],
         "size": [
           16,
-          8,
-          16
+          16,
+          5
         ]
       }
-    }
+    },
+    "permutations": [
+      {
+        "condition": "q.block_state('minecraft:cardinal_direction') == 'north'",
+        "components": {
+          "minecraft:geometry": "geometry.mcn_server_rack_north",
+          "minecraft:collision_box": {
+            "origin": [
+              -8,
+              0,
+              -8
+            ],
+            "size": [
+              16,
+              16,
+              5
+            ]
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -8,
+              0,
+              -8
+            ],
+            "size": [
+              16,
+              16,
+              5
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecraft:cardinal_direction') == 'south'",
+        "components": {
+          "minecraft:geometry": "geometry.mcn_server_rack_south",
+          "minecraft:collision_box": {
+            "origin": [
+              -8,
+              0,
+              3
+            ],
+            "size": [
+              16,
+              16,
+              5
+            ]
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -8,
+              0,
+              3
+            ],
+            "size": [
+              16,
+              16,
+              5
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecraft:cardinal_direction') == 'east'",
+        "components": {
+          "minecraft:geometry": "geometry.mcn_server_rack_east",
+          "minecraft:collision_box": {
+            "origin": [
+              3,
+              0,
+              -8
+            ],
+            "size": [
+              5,
+              16,
+              16
+            ]
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              3,
+              0,
+              -8
+            ],
+            "size": [
+              5,
+              16,
+              16
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecraft:cardinal_direction') == 'west'",
+        "components": {
+          "minecraft:geometry": "geometry.mcn_server_rack_west",
+          "minecraft:collision_box": {
+            "origin": [
+              -8,
+              0,
+              -8
+            ],
+            "size": [
+              5,
+              16,
+              16
+            ]
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -8,
+              0,
+              -8
+            ],
+            "size": [
+              5,
+              16,
+              16
+            ]
+          }
+        }
+      }
+    ]
   }
 }

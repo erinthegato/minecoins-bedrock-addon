@@ -7,6 +7,21 @@
     },
     "mcn_minecoin": {
       "textures": "textures/items/mcn_minecoin"
+    },
+    "mcn_icon_computer": {
+      "textures": "textures/items/mcn_icon_computer"
+    },
+    "mcn_icon_store": {
+      "textures": "textures/items/mcn_icon_store"
+    },
+    "mcn_icon_coins": {
+      "textures": "textures/items/mcn_icon_coins"
+    },
+    "mcn_icon_docs": {
+      "textures": "textures/items/mcn_icon_docs"
+    },
+    "mcn_icon_shutdown": {
+      "textures": "textures/items/mcn_icon_shutdown"
     }
   }
 }

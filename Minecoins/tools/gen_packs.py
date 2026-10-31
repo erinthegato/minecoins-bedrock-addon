@@ -14,6 +14,7 @@ UUID_BP_DATA = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02"
 UUID_BP_SCRIPT = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03"
 UUID_RP = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04"
 UUID_RP_RES = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05"
+VERSION = [1, 1, 0]
 
 
 def write(path, obj):
@@ -34,10 +35,13 @@ BLOCKS = [
     ("radio_tower", "#b03030", 1.5, 6),
     ("radio_extender", "#8a2a2a", 1.2, 4),
     ("lan_cable", "#c07a2c", 0.5, 0),
+    ("monitor", "#2f3540", 1.0, 5),
 ]
 
-HALF_BLOCKS = {"server_rack", "battery", "cooling_unit"}
+HALF_BLOCKS = {"battery", "cooling_unit"}
 FLAT_BLOCKS = {"solar_panel"}
+PIPE_BLOCKS = {"power_cable", "lan_cable"}
+CARDINALS = ["north", "south", "east", "west"]
 PIPE_DIRECTIONS = [
     ("north", (0, 0, -1), 1),
     ("south", (0, 0, 1), 2),
@@ -46,17 +50,57 @@ PIPE_DIRECTIONS = [
 ]
 
 
+def cube(origin, size):
+    """Cube with explicit per-face UVs; box UV walks off a 16x16 texture on
+    flat/thin shapes and leaves the top face blank."""
+    uv = [0, 0]
+    return {
+        "origin": origin,
+        "size": size,
+        "uv": {
+            "up": {"uv": uv, "uv_size": [size[0], size[2]]},
+            "down": {"uv": uv, "uv_size": [size[0], size[2]]},
+            "north": {"uv": uv, "uv_size": [size[0], size[1]]},
+            "south": {"uv": uv, "uv_size": [size[0], size[1]]},
+            "east": {"uv": uv, "uv_size": [size[2], size[1]]},
+            "west": {"uv": uv, "uv_size": [size[2], size[1]]},
+        },
+    }
+
+
+def rack_box(direction):
+    """Wall-mounted rack: full height, thin, flush with one side."""
+    if direction == "south":
+        return {"origin": [-8, 0, 3], "size": [16, 16, 5]}
+    if direction == "east":
+        return {"origin": [3, 0, -8], "size": [5, 16, 16]}
+    if direction == "west":
+        return {"origin": [-8, 0, -8], "size": [5, 16, 16]}
+    return {"origin": [-8, 0, -8], "size": [16, 16, 5]}
+
+
+def monitor_box(direction):
+    """Item-frame style wall monitor: a 14x14 panel, 1px deep."""
+    if direction == "south":
+        return {"origin": [-7, 1, 7], "size": [14, 14, 1]}
+    if direction == "east":
+        return {"origin": [7, 1, -7], "size": [1, 14, 14]}
+    if direction == "west":
+        return {"origin": [-8, 1, -7], "size": [1, 14, 14]}
+    return {"origin": [-7, 1, -8], "size": [14, 14, 1]}
+
+
 def pipe_cubes(mask):
     """Fence-style pipe: centre post plus an arm per connected side."""
-    cubes = [{"origin": [-2, 0, -2], "size": [4, 16, 4], "uv": [6, 0]}]
+    cubes = [cube([-2, 0, -2], [4, 16, 4])]
     if mask & 1:
-        cubes.append({"origin": [-2, 6, -8], "size": [4, 4, 6], "uv": [5, 2]})
+        cubes.append(cube([-2, 6, -8], [4, 4, 6]))
     if mask & 2:
-        cubes.append({"origin": [-2, 6, 2], "size": [4, 4, 6], "uv": [5, 2]})
+        cubes.append(cube([-2, 6, 2], [4, 4, 6]))
     if mask & 4:
-        cubes.append({"origin": [2, 6, -2], "size": [6, 4, 4], "uv": [2, 5]})
+        cubes.append(cube([2, 6, -2], [6, 4, 4]))
     if mask & 8:
-        cubes.append({"origin": [-8, 6, -2], "size": [6, 4, 4], "uv": [2, 5]})
+        cubes.append(cube([-8, 6, -2], [6, 4, 4]))
     return cubes
 
 
@@ -81,16 +125,60 @@ for name, colour, hardness, light in BLOCKS:
     }
     permutations = None
     if name in HALF_BLOCKS:
-        # server hardware: half-height model and half-block hitbox
+        # supporting hardware: half-height model and half-block hitbox
         components["minecraft:geometry"] = f"geometry.mcn_{name}"
         components["minecraft:collision_box"] = {"origin": [-8, 0, -8], "size": [16, 8, 16]}
         components["minecraft:selection_box"] = {"origin": [-8, 0, -8], "size": [16, 8, 16]}
+    elif name == "server_rack":
+        # full-height wall panel, rotated to the face you place it against
+        description["traits"] = {
+            "minecraft:placement_direction": {
+                "enabled_states": ["minecraft:cardinal_direction"],
+                "y_rotation_offset": 180,
+            }
+        }
+        components["minecraft:geometry"] = "geometry.mcn_server_rack_north"
+        components["minecraft:collision_box"] = rack_box("north")
+        components["minecraft:selection_box"] = rack_box("north")
+        permutations = [
+            {
+                "condition": f"q.block_state('minecraft:cardinal_direction') == '{d}'",
+                "components": {
+                    "minecraft:geometry": f"geometry.mcn_server_rack_{d}",
+                    "minecraft:collision_box": rack_box(d),
+                    "minecraft:selection_box": rack_box(d),
+                },
+            }
+            for d in CARDINALS
+        ]
+    elif name == "monitor":
+        # wall terminal: item-frame style panel rotated to the wall it is on
+        description["traits"] = {
+            "minecraft:placement_direction": {
+                "enabled_states": ["minecraft:cardinal_direction"],
+                "y_rotation_offset": 180,
+            }
+        }
+        components["minecraft:geometry"] = "geometry.mcn_monitor_north"
+        components["minecraft:collision_box"] = monitor_box("north")
+        components["minecraft:selection_box"] = monitor_box("north")
+        permutations = [
+            {
+                "condition": f"q.block_state('minecraft:cardinal_direction') == '{d}'",
+                "components": {
+                    "minecraft:geometry": f"geometry.mcn_monitor_{d}",
+                    "minecraft:collision_box": monitor_box(d),
+                    "minecraft:selection_box": monitor_box(d),
+                },
+            }
+            for d in CARDINALS
+        ]
     elif name in FLAT_BLOCKS:
         # leaf-litter style plate: placeable flat, 1px collision
         components["minecraft:geometry"] = f"geometry.mcn_{name}"
         components["minecraft:collision_box"] = {"origin": [-8, 0, -8], "size": [16, 1, 16]}
         components["minecraft:selection_box"] = {"origin": [-8, 0, -8], "size": [16, 2, 16]}
-    elif name == "power_cable":
+    elif name in PIPE_BLOCKS:
         description["states"] = {
             f"minecoins:{d}": [False, True] for d, _o, _b in PIPE_DIRECTIONS
         }
@@ -155,6 +243,8 @@ RECIPES = [
      {"C": "minecraft:copper_ingot", "S": "minecraft:string"}, 4),
     ("tablet", ["IGI", "GRG", "IRI"],
      {"I": "minecraft:iron_ingot", "G": "minecraft:glass", "R": "minecraft:redstone"}, 1),
+    ("monitor", ["IGI", "GRG", "IGI"],
+     {"I": "minecraft:iron_ingot", "G": "minecraft:glass", "R": "minecraft:redstone"}, 1),
 ]
 for name, pattern, keys, count in RECIPES:
     write(os.path.join(BP, "recipes", f"{name}.json"), {
@@ -184,15 +274,21 @@ def geo(identifier, cubes):
 
 
 MODELS = []
-for name in ("server_rack", "battery", "cooling_unit"):
+for name in ("battery", "cooling_unit"):
+    MODELS.append(geo(f"geometry.mcn_{name}", [cube([-8, 0, -8], [16, 8, 16])]))
+MODELS.append(geo("geometry.mcn_solar_panel", [cube([-8, 0, -8], [16, 1, 16])]))
+for direction in CARDINALS:
+    box = rack_box(direction)
     MODELS.append(geo(
-        f"geometry.mcn_{name}",
-        [{"origin": [-8, 0, -8], "size": [16, 8, 16], "uv": [0, 0]}],
+        f"geometry.mcn_server_rack_{direction}",
+        [cube(box["origin"], box["size"])],
     ))
-MODELS.append(geo(
-    "geometry.mcn_solar_panel",
-    [{"origin": [-8, 0, -8], "size": [16, 1, 16], "uv": [0, 0]}],
-))
+for direction in CARDINALS:
+    box = monitor_box(direction)
+    MODELS.append(geo(
+        f"geometry.mcn_monitor_{direction}",
+        [cube(box["origin"], box["size"])],
+    ))
 for mask in range(16):
     MODELS.append(geo(f"geometry.mcn_power_cable_{mask}", pipe_cubes(mask)))
 
@@ -201,6 +297,24 @@ write(os.path.join(RP, "models", "blocks", "mcn_models.geo.json"), {
     "minecraft:geometry": MODELS,
 })
 
+# ---------------------------------------------------------------- language
+BLOCK_NAMES = {
+    "power_cable": "Power Cable",
+    "solar_panel": "Solar Panel",
+    "battery": "Battery",
+    "cooling_unit": "Cooling Unit",
+    "server_rack": "Server Rack",
+    "radio_tower": "Radio Tower",
+    "radio_extender": "Radio Extender",
+    "lan_cable": "LAN Cable",
+    "monitor": "Monitor",
+}
+lang = [f"tile.minecoins:{n}.name={label}" for n, label in BLOCK_NAMES.items()]
+lang.append("item.minecoins:tablet.name=Minecoins Tablet")
+os.makedirs(os.path.join(RP, "texts"), exist_ok=True)
+with open(os.path.join(RP, "texts", "en_US.lang"), "w", encoding="utf-8", newline="\n") as f:
+    f.write("\n".join(lang) + "\n")
+
 # ---------------------------------------------------------------- manifests
 write(os.path.join(BP, "manifest.json"), {
     "format_version": 2,
@@ -208,25 +322,25 @@ write(os.path.join(BP, "manifest.json"), {
         "name": "Minecoins Core (Behavior)",
         "description": "Minecoins, digital storage, power grid and radio network.",
         "uuid": UUID_BP,
-        "version": [1, 0, 0],
+        "version": VERSION,
         "min_engine_version": [1, 21, 70],
     },
     "modules": [
-        {"type": "data", "uuid": UUID_BP_DATA, "version": [1, 0, 0]},
+        {"type": "data", "uuid": UUID_BP_DATA, "version": VERSION},
         {
             "type": "script",
             "language": "javascript",
             "uuid": UUID_BP_SCRIPT,
-            "version": [1, 0, 0],
+            "version": VERSION,
             "entry": "scripts/main.js",
         },
     ],
     "dependencies": [
         {"module_name": "@minecraft/server", "version": "2.0.0"},
         {"module_name": "@minecraft/server-ui", "version": "2.0.0"},
-        {"uuid": UUID_RP, "version": [1, 0, 0]},
+        {"uuid": UUID_RP, "version": VERSION},
     ],
-    "metadata": {"authors": ["Minecoins"], "generated_with": {"minecoins": ["1.0.0"]}},
+    "metadata": {"authors": ["Minecoins"], "generated_with": {"minecoins": ["1.1.0"]}},
 })
 
 write(os.path.join(RP, "manifest.json"), {
@@ -235,11 +349,11 @@ write(os.path.join(RP, "manifest.json"), {
         "name": "Minecoins Core (Resources)",
         "description": "Textures for the Minecoins addon.",
         "uuid": UUID_RP,
-        "version": [1, 0, 0],
+        "version": VERSION,
         "min_engine_version": [1, 21, 70],
     },
-    "modules": [{"type": "resources", "uuid": UUID_RP_RES, "version": [1, 0, 0]}],
-    "dependencies": [{"uuid": UUID_BP, "version": [1, 0, 0]}],
+    "modules": [{"type": "resources", "uuid": UUID_RP_RES, "version": VERSION}],
+    "dependencies": [{"uuid": UUID_BP, "version": VERSION}],
     "metadata": {"authors": ["Minecoins"]},
 })
 
@@ -262,6 +376,11 @@ write(os.path.join(RP, "textures", "item_texture.json"), {
     "texture_data": {
         "mcn_tablet": {"textures": "textures/items/mcn_tablet"},
         "mcn_minecoin": {"textures": "textures/items/mcn_minecoin"},
+        "mcn_icon_computer": {"textures": "textures/items/mcn_icon_computer"},
+        "mcn_icon_store": {"textures": "textures/items/mcn_icon_store"},
+        "mcn_icon_coins": {"textures": "textures/items/mcn_icon_coins"},
+        "mcn_icon_docs": {"textures": "textures/items/mcn_icon_docs"},
+        "mcn_icon_shutdown": {"textures": "textures/items/mcn_icon_shutdown"},
     },
 })
 
@@ -371,6 +490,75 @@ def tex_lan_cable(x, y):
     return (206, 130, 46, 255)
 
 
+def tex_monitor(x, y):
+    if x < 2 or y < 2 or x > 13 or y > 13:
+        return (58, 64, 76, 255)
+    if x == 13 and y == 2:
+        return (240, 90, 70, 255)
+    if y >= 13:
+        return (206, 210, 216, 255)
+    if y % 4 == 0:
+        return (34, 92, 150, 255)
+    return (46, 122, 186, 255)
+
+
+def icon_computer(x, y):
+    if 3 <= x <= 28 and 3 <= y <= 22:
+        if x < 6 or x > 25 or y < 6 or y > 19:
+            return (190, 192, 198, 255)
+        return (72, 152, 222, 255) if y % 4 else (36, 104, 168, 255)
+    if 11 <= x <= 20 and 23 <= y <= 27:
+        return (150, 152, 158, 255)
+    if 7 <= x <= 24 and 28 <= y <= 29:
+        return (120, 122, 130, 255)
+    return (0, 0, 0, 0)
+
+
+def icon_store(x, y):
+    if 6 <= x <= 25 and 11 <= y <= 28:
+        if 6 <= x <= 8 or 23 <= x <= 25:
+            return (122, 86, 20, 255)
+        if y > 20 and x % 5 == 0:
+            return (198, 158, 40, 255)
+        return (236, 196, 74, 255)
+    if abs(((x - 15.5) ** 2 + (y - 10) ** 2) ** 0.5 - 6) < 1.2 and y <= 11:
+        return (122, 86, 20, 255)
+    return (0, 0, 0, 0)
+
+
+def icon_coins(x, y):
+    low = ((x - 15.5) ** 2 + (y - 21) ** 2) ** 0.5
+    if low <= 9:
+        return (120, 82, 16, 255) if low > 7 else (232, 186, 52, 255)
+    top = ((x - 15.5) ** 2 + (y - 12) ** 2) ** 0.5
+    if top <= 8:
+        return (150, 104, 20, 255) if top > 6 else (255, 216, 96, 255)
+    return (0, 0, 0, 0)
+
+
+def icon_docs(x, y):
+    if 7 <= x <= 24 and 4 <= y <= 28:
+        if x in (7, 24) or y in (4, 28):
+            return (150, 152, 158, 255)
+        if (x + y) % 7 == 0 and 9 <= y <= 24:
+            return (150, 152, 158, 255)
+        return (240, 240, 244, 255)
+    return (0, 0, 0, 0)
+
+
+def icon_shutdown(x, y):
+    r = ((x - 15.5) ** 2 + (y - 15.5) ** 2) ** 0.5
+    if r <= 11:
+        if r > 9:
+            return (120, 12, 12, 255)
+        if 5.0 <= r <= 6.6 and not (y < 15.5 and abs(x - 15.5) < 2.2):
+            return (250, 245, 245, 255)
+        if abs(x - 15.5) <= 1.4 and 6 <= y <= 15:
+            return (250, 245, 245, 255)
+        return (196, 32, 32, 255)
+    return (0, 0, 0, 0)
+
+
 def tex_tablet(x, y):
     if x < 2 or y < 2 or x > 13 or y > 13:
         return (0, 0, 0, 0)
@@ -403,6 +591,16 @@ for n, fn in TEXTURES.items():
 ITEM_TEXTURES = {"mcn_tablet": tex_tablet, "mcn_minecoin": tex_minecoin}
 for n, fn in ITEM_TEXTURES.items():
     png(os.path.join(RP, "textures", "items", f"{n}.png"), fn)
+
+DESKTOP_ICONS = {
+    "mcn_icon_computer": icon_computer,
+    "mcn_icon_store": icon_store,
+    "mcn_icon_coins": icon_coins,
+    "mcn_icon_docs": icon_docs,
+    "mcn_icon_shutdown": icon_shutdown,
+}
+for n, fn in DESKTOP_ICONS.items():
+    png(os.path.join(RP, "textures", "items", f"{n}.png"), fn, 32)
 
 # ---------------------------------------------------------------- pack icon
 ICON = 128
