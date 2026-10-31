@@ -59,10 +59,32 @@ function refreshPipe(dim, loc) {
   try { b.setPermutation(BlockPermutation.resolve(b.typeId, states)); } catch { /* ignore */ }
 }
 
+/* Racks join to their horizontal neighbours, wall-fashion. */
+const RACK_LINKS = [
+  ["minecoins:north", 0, 0, -1],
+  ["minecoins:south", 0, 0, 1],
+  ["minecoins:east", 1, 0, 0],
+  ["minecoins:west", -1, 0, 0],
+];
+
+function refreshRack(dim, loc) {
+  const b = dim.getBlock(loc);
+  if (!b || b.typeId !== B.rack) return;
+  const states = {};
+  for (const [state, dx, dy, dz] of RACK_LINKS) {
+    const n = dim.getBlock({ x: loc.x + dx, y: loc.y + dy, z: loc.z + dz });
+    states[state] = !!n && n.typeId === B.rack;
+  }
+  try { b.setPermutation(BlockPermutation.resolve(B.rack, states)); } catch { /* ignore */ }
+}
+
 function refreshAround(dim, loc) {
   refreshPipe(dim, loc);
+  refreshRack(dim, loc);
   for (const o of [[0, 0, -1], [0, 0, 1], [1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0]]) {
-    refreshPipe(dim, { x: loc.x + o[0], y: loc.y + o[1], z: loc.z + o[2] });
+    const n = { x: loc.x + o[0], y: loc.y + o[1], z: loc.z + o[2] };
+    refreshPipe(dim, n);
+    refreshRack(dim, n);
   }
 }
 

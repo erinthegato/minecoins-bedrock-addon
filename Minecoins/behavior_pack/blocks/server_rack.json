@@ -6,13 +6,23 @@
       "menu_category": {
         "category": "construction"
       },
-      "traits": {
-        "minecraft:placement_direction": {
-          "enabled_states": [
-            "minecraft:cardinal_direction"
-          ],
-          "y_rotation_offset": 180
-        }
+      "states": {
+        "minecoins:north": [
+          false,
+          true
+        ],
+        "minecoins:south": [
+          false,
+          true
+        ],
+        "minecoins:east": [
+          false,
+          true
+        ],
+        "minecoins:west": [
+          false,
+          true
+        ]
       }
     },
     "components": {
@@ -32,7 +42,7 @@
       },
       "minecraft:map_color": "#23252c",
       "minecraft:light_emission": 3,
-      "minecraft:geometry": "geometry.mcn_server_rack_north",
+      "minecraft:geometry": "geometry.mcn_server_rack_0",
       "minecraft:collision_box": {
         "origin": [
           -6,
@@ -60,9 +70,9 @@
     },
     "permutations": [
       {
-        "condition": "q.block_state('minecraft:cardinal_direction') == 'north'",
+        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == false",
         "components": {
-          "minecraft:geometry": "geometry.mcn_server_rack_north",
+          "minecraft:geometry": "geometry.mcn_server_rack_0",
           "minecraft:collision_box": {
             "origin": [
               -6,
@@ -90,9 +100,39 @@
         }
       },
       {
-        "condition": "q.block_state('minecraft:cardinal_direction') == 'south'",
+        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == false",
         "components": {
-          "minecraft:geometry": "geometry.mcn_server_rack_south",
+          "minecraft:geometry": "geometry.mcn_server_rack_1",
+          "minecraft:collision_box": {
+            "origin": [
+              -6,
+              0,
+              -8
+            ],
+            "size": [
+              12,
+              16,
+              14
+            ]
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -8
+            ],
+            "size": [
+              12,
+              16,
+              14
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == false",
+        "components": {
+          "minecraft:geometry": "geometry.mcn_server_rack_2",
           "minecraft:collision_box": {
             "origin": [
               -6,
@@ -101,6 +141,66 @@
             ],
             "size": [
               12,
+              16,
+              14
+            ]
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              16,
+              14
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == false",
+        "components": {
+          "minecraft:geometry": "geometry.mcn_server_rack_3",
+          "minecraft:collision_box": {
+            "origin": [
+              -6,
+              0,
+              -8
+            ],
+            "size": [
+              12,
+              16,
+              16
+            ]
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -8
+            ],
+            "size": [
+              12,
+              16,
+              16
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == false",
+        "components": {
+          "minecraft:geometry": "geometry.mcn_server_rack_4",
+          "minecraft:collision_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              14,
               16,
               12
             ]
@@ -112,7 +212,7 @@
               -6
             ],
             "size": [
-              12,
+              14,
               16,
               12
             ]
@@ -120,9 +220,39 @@
         }
       },
       {
-        "condition": "q.block_state('minecraft:cardinal_direction') == 'east'",
+        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == false",
         "components": {
-          "minecraft:geometry": "geometry.mcn_server_rack_east",
+          "minecraft:geometry": "geometry.mcn_server_rack_5",
+          "minecraft:collision_box": {
+            "origin": [
+              -6,
+              0,
+              -8
+            ],
+            "size": [
+              14,
+              16,
+              14
+            ]
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -8
+            ],
+            "size": [
+              14,
+              16,
+              14
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == false",
+        "components": {
+          "minecraft:geometry": "geometry.mcn_server_rack_6",
           "minecraft:collision_box": {
             "origin": [
               -6,
@@ -130,9 +260,9 @@
               -6
             ],
             "size": [
-              12,
+              14,
               16,
-              12
+              14
             ]
           },
           "minecraft:selection_box": {
@@ -142,7 +272,67 @@
               -6
             ],
             "size": [
-              12,
+              14,
+              16,
+              14
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == false",
+        "components": {
+          "minecraft:geometry": "geometry.mcn_server_rack_7",
+          "minecraft:collision_box": {
+            "origin": [
+              -6,
+              0,
+              -8
+            ],
+            "size": [
+              14,
+              16,
+              16
+            ]
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -8
+            ],
+            "size": [
+              14,
+              16,
+              16
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == true",
+        "components": {
+          "minecraft:geometry": "geometry.mcn_server_rack_8",
+          "minecraft:collision_box": {
+            "origin": [
+              -8,
+              0,
+              -6
+            ],
+            "size": [
+              14,
+              16,
+              12
+            ]
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -8,
+              0,
+              -6
+            ],
+            "size": [
+              14,
               16,
               12
             ]
@@ -150,31 +340,211 @@
         }
       },
       {
-        "condition": "q.block_state('minecraft:cardinal_direction') == 'west'",
+        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == true",
         "components": {
-          "minecraft:geometry": "geometry.mcn_server_rack_west",
+          "minecraft:geometry": "geometry.mcn_server_rack_9",
           "minecraft:collision_box": {
             "origin": [
-              -6,
+              -8,
+              0,
+              -8
+            ],
+            "size": [
+              14,
+              16,
+              14
+            ]
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -8,
+              0,
+              -8
+            ],
+            "size": [
+              14,
+              16,
+              14
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == true",
+        "components": {
+          "minecraft:geometry": "geometry.mcn_server_rack_10",
+          "minecraft:collision_box": {
+            "origin": [
+              -8,
               0,
               -6
             ],
             "size": [
-              12,
+              14,
+              16,
+              14
+            ]
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -8,
+              0,
+              -6
+            ],
+            "size": [
+              14,
+              16,
+              14
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == false and q.block_state('minecoins:west') == true",
+        "components": {
+          "minecraft:geometry": "geometry.mcn_server_rack_11",
+          "minecraft:collision_box": {
+            "origin": [
+              -8,
+              0,
+              -8
+            ],
+            "size": [
+              14,
+              16,
+              16
+            ]
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -8,
+              0,
+              -8
+            ],
+            "size": [
+              14,
+              16,
+              16
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == true",
+        "components": {
+          "minecraft:geometry": "geometry.mcn_server_rack_12",
+          "minecraft:collision_box": {
+            "origin": [
+              -8,
+              0,
+              -6
+            ],
+            "size": [
+              16,
               16,
               12
             ]
           },
           "minecraft:selection_box": {
             "origin": [
-              -6,
+              -8,
               0,
               -6
             ],
             "size": [
-              12,
+              16,
               16,
               12
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == false and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == true",
+        "components": {
+          "minecraft:geometry": "geometry.mcn_server_rack_13",
+          "minecraft:collision_box": {
+            "origin": [
+              -8,
+              0,
+              -8
+            ],
+            "size": [
+              16,
+              16,
+              14
+            ]
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -8,
+              0,
+              -8
+            ],
+            "size": [
+              16,
+              16,
+              14
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecoins:north') == false and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == true",
+        "components": {
+          "minecraft:geometry": "geometry.mcn_server_rack_14",
+          "minecraft:collision_box": {
+            "origin": [
+              -8,
+              0,
+              -6
+            ],
+            "size": [
+              16,
+              16,
+              14
+            ]
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -8,
+              0,
+              -6
+            ],
+            "size": [
+              16,
+              16,
+              14
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecoins:north') == true and q.block_state('minecoins:south') == true and q.block_state('minecoins:east') == true and q.block_state('minecoins:west') == true",
+        "components": {
+          "minecraft:geometry": "geometry.mcn_server_rack_15",
+          "minecraft:collision_box": {
+            "origin": [
+              -8,
+              0,
+              -8
+            ],
+            "size": [
+              16,
+              16,
+              16
+            ]
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -8,
+              0,
+              -8
+            ],
+            "size": [
+              16,
+              16,
+              16
             ]
           }
         }

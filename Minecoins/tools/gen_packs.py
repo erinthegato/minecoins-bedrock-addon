@@ -14,7 +14,7 @@ UUID_BP_DATA = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02"
 UUID_BP_SCRIPT = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03"
 UUID_RP = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04"
 UUID_RP_RES = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05"
-VERSION = [1, 4, 2]
+VERSION = [1, 5, 0]
 
 
 def write(path, obj):
@@ -68,11 +68,23 @@ def cube(origin, size):
     }
 
 
-def rack_box(direction):
-    """Freestanding rack: full height, centred on the block space on both
-    horizontal axes, so it never hugs a wall. Direction still selects the front
-    face, so every cardinal variant shares this box."""
-    return {"origin": [-6, 0, -6], "size": [12, 16, 12]}
+RACK_SIDES = [("north", 1), ("south", 2), ("east", 4), ("west", 8)]
+
+
+def rack_box(mask=0):
+    """Freestanding cabinet centred in its block. Every side that touches
+    another rack is stretched out to the block edge, so a row of racks joins into
+    one continuous wall instead of leaving a 4px gap between each."""
+    x0, x1, z0, z1 = -6, 6, -6, 6
+    if mask & 1:
+        z0 = -8
+    if mask & 2:
+        z1 = 8
+    if mask & 4:
+        x1 = 8
+    if mask & 8:
+        x0 = -8
+    return {"origin": [x0, 0, z0], "size": [x1 - x0, 16, z1 - z0]}
 
 
 def monitor_box(direction):
@@ -126,27 +138,30 @@ for name, colour, hardness, light in BLOCKS:
         components["minecraft:collision_box"] = {"origin": [-8, 0, -8], "size": [16, 8, 16]}
         components["minecraft:selection_box"] = {"origin": [-8, 0, -8], "size": [16, 8, 16]}
     elif name == "server_rack":
-        # full-height cabinet, centred in the block and rotated for its front face
-        description["traits"] = {
-            "minecraft:placement_direction": {
-                "enabled_states": ["minecraft:cardinal_direction"],
-                "y_rotation_offset": 180,
-            }
+        # wall-forming cabinet: each touching side grows out to the block edge
+        description["states"] = {
+            f"minecoins:{side}": [False, True] for side, _bit in RACK_SIDES
         }
-        components["minecraft:geometry"] = "geometry.mcn_server_rack_north"
-        components["minecraft:collision_box"] = rack_box("north")
-        components["minecraft:selection_box"] = rack_box("north")
-        permutations = [
-            {
-                "condition": f"q.block_state('minecraft:cardinal_direction') == '{d}'",
+        box0 = rack_box(0)
+        components["minecraft:geometry"] = "geometry.mcn_server_rack_0"
+        components["minecraft:collision_box"] = box0
+        components["minecraft:selection_box"] = box0
+        permutations = []
+        for mask in range(16):
+            condition = " and ".join(
+                f"q.block_state('minecoins:{side}') == "
+                f"{'true' if mask & bit else 'false'}"
+                for side, bit in RACK_SIDES
+            )
+            box = rack_box(mask)
+            permutations.append({
+                "condition": condition,
                 "components": {
-                    "minecraft:geometry": f"geometry.mcn_server_rack_{d}",
-                    "minecraft:collision_box": rack_box(d),
-                    "minecraft:selection_box": rack_box(d),
+                    "minecraft:geometry": f"geometry.mcn_server_rack_{mask}",
+                    "minecraft:collision_box": box,
+                    "minecraft:selection_box": box,
                 },
-            }
-            for d in CARDINALS
-        ]
+            })
     elif name == "monitor":
         # wall terminal: item-frame style panel rotated to the wall it is on
         description["traits"] = {
@@ -342,10 +357,10 @@ MODELS = []
 for name in ("battery", "cooling_unit"):
     MODELS.append(geo(f"geometry.mcn_{name}", [cube([-8, 0, -8], [16, 8, 16])]))
 MODELS.append(geo("geometry.mcn_solar_panel", [cube([-8, 0, -8], [16, 1, 16])]))
-for direction in CARDINALS:
-    box = rack_box(direction)
+for mask in range(16):
+    box = rack_box(mask)
     MODELS.append(geo(
-        f"geometry.mcn_server_rack_{direction}",
+        f"geometry.mcn_server_rack_{mask}",
         [cube(box["origin"], box["size"])],
     ))
 for direction in CARDINALS:

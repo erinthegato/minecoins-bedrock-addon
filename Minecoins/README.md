@@ -43,9 +43,11 @@ creative menu under both the **Items** and **Equipment** tabs.
   (walkable, stack it against walls, place it flush on floors).
 - **Battery** — 5000 EU each. **Cooling unit** — 3 EU/s, both half-height blocks
   (half-block model and half-block hitbox).
-- **Server rack** — 8 EU/s and a full-height cabinet that sits centred in
-  its block, so it no longer hugs a wall. It draws power through the cable
-  run and needs a cooling unit on the same grid.
+- **Server rack** — 8 EU/s and a full-height cabinet centred in its block.
+  Racks placed side by side join into one continuous wall: every touching
+  side grows out to the block edge, and the seam closes again when a
+  neighbour is removed. It draws power through the cable run and needs a
+  cooling unit on the same grid.
 - **Power cable** — a pipe that connects like a fence: it grows an arm toward
   any neighbouring cable or machine and retracts when that neighbour is removed.
   It still joins the grid by touching blocks (BFS, up to ~700).
