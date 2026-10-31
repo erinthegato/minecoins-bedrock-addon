@@ -4,3 +4,7 @@ __pycache__/
 *.pyc
 Thumbs.db
 desktop.ini
+
+# Built packages: published as release assets, not tracked in source
+*.mcpack
+*.mcaddon
