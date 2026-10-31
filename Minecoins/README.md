@@ -12,6 +12,16 @@ server/radio infrastructure it depends on.
   `@minecraft/server 2.0.0`).
 - Requires Minecraft Bedrock 1.21.70+ (script API 2.0.0).
 
+### 9x UI skin
+The resource pack also carries the Win95 form chrome: an **additive**
+`ui/server_form.json` that inserts a 9-slice gray frame into the `long_form`
+and `custom_form` controls. No Mojang UI files are copied and vanilla dialogs
+are untouched. There is no third pack — the addon is still two packs, BP + RP.
+If a future game version misbehaves with it, delete `ui/server_form.json` from
+the resource pack and you are back to the plain form with everything working.
+Buttons stay engine-drawn; a beveled button face needs the whole-game texture
+route or an in-game iteration pass.
+
 ## Features
 
 ### Minecoins

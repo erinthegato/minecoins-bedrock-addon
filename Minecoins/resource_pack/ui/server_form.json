@@ -1,0 +1,63 @@
+{
+  "namespace": "server_form",
+  "long_form": {
+    "modifications": [
+      {
+        "array_name": "controls",
+        "operation": "insert_front",
+        "value": [
+          {
+            "win95_frame": {
+              "type": "image",
+              "texture": "textures/ui/mcn_win95_frame",
+              "size": [
+                "100% + 8px",
+                "100% + 8px"
+              ],
+              "offset": [
+                -4,
+                -4
+              ],
+              "layer": -10,
+              "nine_slice_buttom": 6,
+              "nine_slice_bottom": 6,
+              "nine_slice_left": 6,
+              "nine_slice_right": 6,
+              "nine_slice_top": 6
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "custom_form": {
+    "modifications": [
+      {
+        "array_name": "controls",
+        "operation": "insert_front",
+        "value": [
+          {
+            "win95_frame": {
+              "type": "image",
+              "texture": "textures/ui/mcn_win95_frame",
+              "size": [
+                "100% + 8px",
+                "100% + 8px"
+              ],
+              "offset": [
+                -4,
+                -4
+              ],
+              "layer": -10,
+              "nine_slice_buttom": 6,
+              "nine_slice_bottom": 6,
+              "nine_slice_left": 6,
+              "nine_slice_right": 6,
+              "nine_slice_top": 6
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
