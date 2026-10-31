@@ -519,6 +519,15 @@ function giveItem(player, id, amount) {
   return true;
 }
 
+/** Button label: black text, colour codes and decorative glyphs removed. */
+function BTN(text) {
+  return `§0${String(text)
+    .replace(/§./g, "")
+    .replace(/[\u2580-\u259f\u2500-\u257f\u25a0-\u25ff\u25b8\u25be]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()}`;
+}
+
 /** Pressure-plate style click on every GUI press. */
 function click(player) {
   player.playSound("random.click", { volume: 0.9, pitch: 1.15 });
@@ -526,7 +535,7 @@ function click(player) {
 
 /* ------------------------------------------------------------ mineOS shell */
 const OS_NAME = "mineOS-09";
-const WIN_TITLE = `§8▐ §7§l${OS_NAME} §8▌`;
+const WIN_TITLE = `§7§l${OS_NAME}`;
 const UI_ICON = {
   computer: "textures/items/mcn_icon_computer",
   store: "textures/items/mcn_icon_store",
@@ -543,15 +552,8 @@ function clock() {
 }
 
 function winBody(name, lines) {
-  const rows = lines.filter(Boolean).map((l) => `§8│ §7${l}`).join("\n");
-  return (
-    `§8┌ §f§l${name}\n` +
-    `§8├ §7File  Edit  View  Go  Favorites  Help\n` +
-    `§8├──────────────────────────────\n` +
-    `${rows}\n` +
-    `§8├──────────────────────────────\n` +
-    `§0§lStart §8▫ §7My Computer  §8▫ §7Store  §8▫ §7Documents   §8▫ §7${clock()}`
-  );
+  const rows = lines.filter(Boolean).join("\n");
+  return `${name}\n\n${rows}`;
 }
 
 async function show(form, player) {
@@ -591,12 +593,12 @@ async function openStorage(player, requireSignal = true) {
         statusLine(st.grid),
         `§8Page ${page + 1}/${pages}`,
       ]))
-      .button("§8[§9 Deposit held item §8]", UI_ICON.docs)
-      .button("§8[§9 Server status §8]", UI_ICON.computer);
+      .button(BTN("§8[§9 Deposit held item §8]"), UI_ICON.docs)
+      .button(BTN("§8[§9 Server status §8]"), UI_ICON.computer);
     for (const [id, c] of slice) {
-      form.button(`§f${id.replace("minecraft:", "").replace(/_/g, " ")} §7×§e${c}`, UI_ICON.store);
+      form.button(BTN(`§f${id.replace("minecraft:", "").replace(/_/g, " ")} §7×§e${c}`), UI_ICON.store);
     }
-    if (pages > 1) { form.button("§8< Previous"); form.button("§8Next >"); }
+    if (pages > 1) { form.button(BTN("§8< Previous")); form.button(BTN("§8Next >")); }
 
     const res = await show(form, player);
     if (res.canceled || res.selection === undefined) return;
@@ -649,7 +651,7 @@ async function openStatus(player, grid) {
         `Link§8: ${sig.why}`,
         `§8Power flows through power cable; cooling sits on the rack's grid.`,
       ]))
-      .button("§8[§9 OK §8]"),
+      .button(BTN("§8[§9 OK §8]")),
     player
   );
 }
@@ -663,10 +665,10 @@ async function openBuy(player, cat, grid) {
         `Balance§8: §e${coins(player)} minecoins`,
         statusLine(grid),
       ]))
-      .button("§8[§9 .. (up one level) §8]", UI_ICON.computer);
+      .button(BTN("§8[§9 .. (up one level) §8]"), UI_ICON.computer);
     for (const id of list) {
       const info = BUY.get(id);
-      form.button(`§f${info.name} §7- §e${info.price}`, iconFor(id));
+      form.button(BTN(`§f${info.name} §7- §e${info.price}`), iconFor(id));
     }
     const res = await show(form, player);
     if (res.canceled || res.selection === undefined) return false;
@@ -709,7 +711,7 @@ async function openChain(player) {
         `Blocks §f${readList(P_CHAIN).length}§7/64 §8(hash-chained)`,
         ...lines,
       ]))
-      .button("§8[§9 OK §8]"),
+      .button(BTN("§8[§9 OK §8]")),
     player
   );
 }
@@ -752,7 +754,7 @@ async function openDesktop(player, label = "Tablet") {
       ``,
       `§8Pick a program. Close the window to shut it down.`,
     ]));
-  for (const prog of PROGRAMS) form.button(`§8▣ §7${prog.name}`, prog.icon);
+  for (const prog of PROGRAMS) form.button(BTN(`${prog.name}`), prog.icon);
   const res = await show(form, player);
   if (res.canceled || res.selection === undefined) return;
   const picked = PROGRAMS[res.selection];
@@ -774,7 +776,7 @@ async function openNetwork(player) {
         `§7Link§8: ${sig.why}`,
         `§8LAN cable links an underground run back to a tower.`,
       ]))
-      .button("§8[§9 OK §8]"),
+      .button(BTN("§8[§9 OK §8]")),
     player
   );
 }
@@ -789,8 +791,8 @@ async function openStore(player, grid) {
         statusLine(grid),
         `§8Diamonds are the premium tier; books sit just below.`,
       ]))
-      .button("§8[§9 .. (up one level) §8]", UI_ICON.computer);
-    for (const c of cats) menu.button(`§8[§f${c} §8]`, UI_ICON.docs);
+      .button(BTN("§8[§9 .. (up one level) §8]"), UI_ICON.computer);
+    for (const c of cats) menu.button(BTN(`§8[§f${c} §8]`), UI_ICON.docs);
     const pick = await show(menu, player);
     if (pick.canceled || pick.selection === undefined || pick.selection === 0) return;
     const cat = cats[pick.selection - 1];
@@ -861,7 +863,7 @@ async function openGuide(player) {
         `§7Chapters§8: §f${GUIDE_PAGES.length}§8 · §7Minecoins§8: §e${coins(player)}`,
         `§8Choose a chapter. Close the window to put the guide away.`,
       ]));
-    for (const page of GUIDE_PAGES) form.button(`§8▣ §7${page.name}`);
+    for (const page of GUIDE_PAGES) form.button(BTN(`${page.name}`));
     const res = await show(form, player);
     if (res.canceled || res.selection === undefined) return;
     const page = GUIDE_PAGES[res.selection];
@@ -870,7 +872,7 @@ async function openGuide(player) {
       new ActionFormData()
         .title(WIN_TITLE)
         .body(winBody(page.name, page.lines))
-        .button("§8[§9 Back to contents §8]"),
+        .button(BTN("§8[§9 Back to contents §8]")),
       player
     );
     if (!back || back.canceled || back.selection === undefined) return;
