@@ -37,6 +37,8 @@ const PIPE_LINKS = [
   ["minecoins:south", 0, 0, 1],
   ["minecoins:east", 1, 0, 0],
   ["minecoins:west", -1, 0, 0],
+  ["minecoins:up", 0, 1, 0],
+  ["minecoins:down", 0, -1, 0],
 ];
 /* Each pipe family connects to its own set of blocks. */
 const PIPE_LINKS_BY_TYPE = {

@@ -14,7 +14,7 @@ UUID_BP_DATA = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02"
 UUID_BP_SCRIPT = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03"
 UUID_RP = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04"
 UUID_RP_RES = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05"
-VERSION = [1, 5, 4]
+VERSION = [1, 6, 0]
 
 # Creative menu: one collapsible group per tab. The same names are declared
 # on the block/item definitions and in item_catalog/crafting_item_catalog.json
@@ -53,6 +53,8 @@ PIPE_DIRECTIONS = [
     ("south", (0, 0, 1), 2),
     ("east", (1, 0, 0), 4),
     ("west", (-1, 0, 0), 8),
+    ("up", (0, 1, 0), 16),
+    ("down", (0, -1, 0), 32),
 ]
 
 
@@ -105,16 +107,23 @@ def monitor_box(direction):
 
 
 def pipe_cubes(mask):
-    """Fence-style pipe: centre post plus an arm per connected side."""
-    cubes = [cube([-2, 0, -2], [4, 16, 4])]
-    if mask & 1:
-        cubes.append(cube([-2, 6, -8], [4, 4, 6]))
-    if mask & 2:
-        cubes.append(cube([-2, 6, 2], [4, 4, 6]))
-    if mask & 4:
-        cubes.append(cube([2, 6, -2], [6, 4, 4]))
-    if mask & 8:
-        cubes.append(cube([-8, 6, -2], [6, 4, 4]))
+    """One pipe, not a fence: a tube crosses the whole block on each axis it is
+    connected on, so a run of blocks reads as a single continuous pipe. It pokes
+    nowhere it is not attached, and a junction is a plain crossing."""
+    x = bool(mask & 4 or mask & 8)
+    z = bool(mask & 1 or mask & 2)
+    y = bool(mask & 16 or mask & 32)
+    cubes = []
+    if x:
+        cubes.append(cube([-8, 6, -2], [16, 4, 4]))
+    if z:
+        cubes.append(cube([-2, 6, -8], [4, 4, 16]))
+    if x or z:
+        cubes.append(cube([-2, 6, -2], [4, 4, 4]))
+    if y:
+        cubes.append(cube([-2, 0, -2], [4, 16, 4]))
+    if not cubes:
+        cubes.append(cube([-2, 0, -2], [4, 8, 4]))
     return cubes
 
 
@@ -203,7 +212,7 @@ for name, colour, hardness, light in BLOCKS:
         components["minecraft:collision_box"] = {"origin": [-2, 0, -2], "size": [4, 16, 4]}
         components["minecraft:selection_box"] = {"origin": [-2, 0, -2], "size": [4, 16, 4]}
         permutations = []
-        for mask in range(16):
+        for mask in range(64):
             condition = " && ".join(
                 f"q.block_state('minecoins:{d}') == {'true' if mask & bit else 'false'}"
                 for d, _o, bit in PIPE_DIRECTIONS
@@ -372,7 +381,7 @@ for direction in CARDINALS:
         f"geometry.mcn_monitor_{direction}",
         [cube(box["origin"], box["size"])],
     ))
-for mask in range(16):
+for mask in range(64):
     MODELS.append(geo(f"geometry.mcn_power_cable_{mask}", pipe_cubes(mask)))
 
 write(os.path.join(RP, "models", "blocks", "mcn_models.geo.json"), {

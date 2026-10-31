@@ -58,12 +58,13 @@ repeated in `item_catalog/crafting_item_catalog.json`.
   side grows out to the block edge, and the seam closes again when a
   neighbour is removed. It draws power through the cable run and needs a
   cooling unit on the same grid.
-- **Power cable** — a pipe that connects like a fence: it grows an arm toward
-  any neighbouring cable or machine and retracts when that neighbour is removed.
-  It still joins the grid by touching blocks (BFS, up to ~700).
-- **LAN cable** — the same fence-style pipe, but it only connects to other
-  LAN cable, radio towers and extenders, so underground runs read as a
-  separate network.
+- **Power cable** - one continuous pipe. It runs a tube through the block on
+  every axis it is attached to, up and down included, so a run of cables reads as a
+  single pipe with the odd junction instead of a row of fence posts. It still joins
+  the grid by touching blocks (BFS, up to ~700).
+- **LAN cable** - the same continuous pipe on its own network: it only links to
+  other LAN cable, radio towers and extenders, so an underground run reads as a
+  separate cable route rather than part of the power grid.
 - A rack is online only when its grid has ≥1 cooling unit **and** stored energy.
   Energy accrues while the chunks are unloaded (rate × elapsed time, capped 6 h).
 - Digital storage needs an online rack within 48 blocks.
