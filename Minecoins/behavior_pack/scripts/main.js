@@ -273,7 +273,10 @@ world.afterEvents.playerPlaceBlock.subscribe((ev) => {
   }
   if (id === B.rack) addEntry(P_RACKS, e);
   if (PIPE_IDS.has(id) || GRID_BLOCKS.includes(id) || NODE_BLOCKS.includes(id)) {
-    refreshAround(ev.block.dimension, ev.block.location);
+    const dim = ev.block.dimension;
+    const at = { x: ev.block.location.x, y: ev.block.location.y, z: ev.block.location.z };
+    refreshAround(dim, at);
+    system.run(() => refreshAround(dim, at));
   }
 });
 
@@ -288,7 +291,10 @@ world.afterEvents.playerBreakBlock.subscribe((ev) => {
   if (NODE_BLOCKS.includes(id)) removeEntry(P_NODES, e);
   if (id === B.rack) removeEntry(P_RACKS, e);
   if (PIPE_IDS.has(id) || GRID_BLOCKS.includes(id) || NODE_BLOCKS.includes(id)) {
-    refreshAround(ev.block.dimension, ev.block.location);
+    const dim = ev.block.dimension;
+    const at = { x: ev.block.location.x, y: ev.block.location.y, z: ev.block.location.z };
+    refreshAround(dim, at);
+    system.run(() => refreshAround(dim, at));
   }
 });
 
@@ -887,7 +893,21 @@ function openLocalGui(player, typeId) {
 try {
   world.beforeEvents.playerInteractWithBlock.subscribe((ev) => {
     const block = ev.block;
-    if (!block || ev.player.isSneaking) return;
+    if (!block) return;
+    if (PIPE_IDS.has(block.typeId) && ev.player.isSneaking) {
+      const player = ev.player;
+      const dim = block.dimension;
+      const l = block.location;
+      const parts = PIPE_LINKS.map(([state, dx, dy, dz]) => {
+        const n = dim.getBlock({ x: l.x + dx, y: l.y + dy, z: l.z + dz });
+        const on = block.permutation.getState(state) ? "on" : "off";
+        return `${state.slice(10)}=${on} -> ${n ? n.typeId.slice(10) : "void"}`;
+      });
+      const line = `§7[cable] §f${block.typeId.slice(10)}  ${parts.join("   ")}`;
+      system.run(() => player.sendMessage(line));
+      return;
+    }
+    if (ev.player.isSneaking) return;
     if (![B.rack, B.tower, B.monitor].includes(block.typeId)) return;
     ev.cancel = true;
     const player = ev.player;
