@@ -1,0 +1,12 @@
+{
+  "resource_pack_name": "minecoins",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "mcn_tablet": {
+      "textures": "textures/items/mcn_tablet"
+    },
+    "mcn_minecoin": {
+      "textures": "textures/items/mcn_minecoin"
+    }
+  }
+}

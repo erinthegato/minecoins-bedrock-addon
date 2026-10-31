@@ -1,0 +1,28 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "minecoins:lan_cable"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "CSC",
+      "SCS",
+      "CSC"
+    ],
+    "key": {
+      "C": {
+        "item": "minecraft:copper_ingot"
+      },
+      "S": {
+        "item": "minecraft:string"
+      }
+    },
+    "result": {
+      "item": "minecoins:lan_cable",
+      "count": 4
+    }
+  }
+}

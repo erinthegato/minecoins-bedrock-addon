@@ -1,0 +1,68 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Minecoins Core (Behavior)",
+    "description": "Minecoins, digital storage, power grid and radio network.",
+    "uuid": "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a01",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      70
+    ]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.0.0"
+    },
+    {
+      "module_name": "@minecraft/server-ui",
+      "version": "2.0.0"
+    },
+    {
+      "uuid": "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "metadata": {
+    "authors": [
+      "Minecoins"
+    ],
+    "generated_with": {
+      "minecoins": [
+        "1.0.0"
+      ]
+    }
+  }
+}

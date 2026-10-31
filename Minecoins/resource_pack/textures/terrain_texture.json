@@ -1,0 +1,32 @@
+{
+  "resource_pack_name": "minecoins",
+  "texture_name": "atlas.terrain",
+  "padding": 8,
+  "num_mip_levels": 4,
+  "texture_data": {
+    "mcn_power_cable": {
+      "textures": "textures/blocks/mcn_power_cable"
+    },
+    "mcn_solar_panel": {
+      "textures": "textures/blocks/mcn_solar_panel"
+    },
+    "mcn_battery": {
+      "textures": "textures/blocks/mcn_battery"
+    },
+    "mcn_cooling_unit": {
+      "textures": "textures/blocks/mcn_cooling_unit"
+    },
+    "mcn_server_rack": {
+      "textures": "textures/blocks/mcn_server_rack"
+    },
+    "mcn_radio_tower": {
+      "textures": "textures/blocks/mcn_radio_tower"
+    },
+    "mcn_radio_extender": {
+      "textures": "textures/blocks/mcn_radio_extender"
+    },
+    "mcn_lan_cable": {
+      "textures": "textures/blocks/mcn_lan_cable"
+    }
+  }
+}

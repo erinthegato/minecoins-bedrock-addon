@@ -1,0 +1,6 @@
+# Freebuff desktop workspace metadata
+.freebuff/
+__pycache__/
+*.pyc
+Thumbs.db
+desktop.ini
