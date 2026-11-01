@@ -62,9 +62,9 @@ repeated in `item_catalog/crafting_item_catalog.json`.
   every axis it is attached to, up and down included, so a run of cables reads as a
   single pipe with the odd junction instead of a row of fence posts. It still joins
   the grid by touching blocks (BFS, up to ~700).
-- **LAN cable** - the same continuous pipe on its own network: it only links to
-  other LAN cable, radio towers and extenders, so an underground run reads as a
-  separate cable route rather than part of the power grid.
+- **Flash drive and storage terminal** - pair a drive by using it on a rack, then
+  insert it into a terminal; the vault opens anywhere the terminal has power, with
+  no cable run back to the server.
 - **Rack modules** - hold a Cooling Unit or a Battery and use it on a rack to bolt
   it in; the cabinet repaints itself (vent fins, battery cells, or both). Sneak and
   use the rack to pull the modules back out.
@@ -76,6 +76,15 @@ repeated in `item_catalog/crafting_item_catalog.json`.
   green and blue pixels stepping through it.
 - **Payout scales with racks** - every powered, cool rack pays 1 minecoin per 5
   real minutes, minimum 1.
+- **27 slots to start** - a single rack opens 27 vault slots; each Storage Module
+  adds another 27. One slot holds one stack, so bulk counts cost more slots.
+- **Upgrade modules** - Speed, Storage and Research, three tiers each, fitted by
+  holding the module and using it on a rack.
+- **Generator** - burns coal, charcoal or leaf litter for 40 EU/s, so a base away
+  from the solar array still runs.
+- **The store is gated** - cheap tiers are open from the start, diamonds and the
+  expensive half need Research I-III fitted. Everything is still craftable in
+  survival.
 - A rack is online only when its grid has ≥1 cooling unit **and** stored energy.
   Energy accrues while the chunks are unloaded (rate × elapsed time, capped 6 h).
 - Digital storage needs an online rack within 48 blocks.

@@ -18,8 +18,9 @@
               "minecoins:server_rack",
               "minecoins:radio_tower",
               "minecoins:radio_extender",
-              "minecoins:lan_cable",
-              "minecoins:monitor"
+              "minecoins:monitor",
+              "minecoins:generator",
+              "minecoins:storage_terminal"
             ]
           }
         ]

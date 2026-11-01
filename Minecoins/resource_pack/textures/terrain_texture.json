@@ -25,11 +25,20 @@
     "mcn_radio_extender": {
       "textures": "textures/blocks/mcn_radio_extender"
     },
-    "mcn_lan_cable": {
-      "textures": "textures/blocks/mcn_lan_cable"
-    },
     "mcn_monitor": {
       "textures": "textures/blocks/mcn_monitor"
+    },
+    "mcn_generator": {
+      "textures": "textures/blocks/mcn_generator"
+    },
+    "mcn_storage_terminal": {
+      "textures": "textures/blocks/mcn_storage_terminal"
+    },
+    "mcn_generator_lit": {
+      "textures": "textures/blocks/mcn_generator_lit"
+    },
+    "mcn_storage_terminal_drive": {
+      "textures": "textures/blocks/mcn_storage_terminal_drive"
     },
     "mcn_server_rack_cool": {
       "textures": "textures/blocks/mcn_server_rack_cool"

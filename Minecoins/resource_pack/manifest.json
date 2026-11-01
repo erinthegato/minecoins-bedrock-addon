@@ -5,8 +5,8 @@
     "description": "Textures for the Minecoins addon.",
     "uuid": "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04",
     "version": [
-      1,
-      7,
+      2,
+      0,
       0
     ],
     "min_engine_version": [
@@ -20,8 +20,8 @@
       "type": "resources",
       "uuid": "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05",
       "version": [
-        1,
-        7,
+        2,
+        0,
         0
       ]
     }
@@ -30,8 +30,8 @@
     {
       "uuid": "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a01",
       "version": [
-        1,
-        7,
+        2,
+        0,
         0
       ]
     }

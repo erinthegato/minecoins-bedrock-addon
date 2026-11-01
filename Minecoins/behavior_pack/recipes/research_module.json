@@ -2,7 +2,7 @@
   "format_version": "1.20.10",
   "minecraft:recipe_shaped": {
     "description": {
-      "identifier": "minecoins:lan_cable"
+      "identifier": "minecoins:research_module"
     },
     "tags": [
       "crafting_table"
@@ -11,21 +11,24 @@
       "context": "AlwaysUnlocked"
     },
     "pattern": [
-      "CSC",
-      "SCS",
-      "CSC"
+      "BRB",
+      "RSR",
+      "BRB"
     ],
     "key": {
-      "C": {
-        "item": "minecraft:copper_ingot"
+      "B": {
+        "item": "minecraft:book"
+      },
+      "R": {
+        "item": "minecraft:redstone"
       },
       "S": {
-        "item": "minecraft:string"
+        "item": "minecraft:amethyst_shard"
       }
     },
     "result": {
-      "item": "minecoins:lan_cable",
-      "count": 4
+      "item": "minecoins:research_module",
+      "count": 1
     }
   }
 }

@@ -25,6 +25,18 @@
     },
     "mcn_guidebook": {
       "textures": "textures/items/mcn_guidebook"
+    },
+    "mcn_flash_drive": {
+      "textures": "textures/items/mcn_flash_drive"
+    },
+    "mcn_speed_module": {
+      "textures": "textures/items/mcn_speed_module"
+    },
+    "mcn_storage_module": {
+      "textures": "textures/items/mcn_storage_module"
+    },
+    "mcn_research_module": {
+      "textures": "textures/items/mcn_research_module"
     }
   }
 }

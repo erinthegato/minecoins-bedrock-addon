@@ -1,0 +1,65 @@
+{
+  "format_version": "1.21.60",
+  "minecraft:block": {
+    "description": {
+      "identifier": "minecoins:storage_terminal",
+      "menu_category": {
+        "category": "construction",
+        "group": "minecoins:itemGroup.name.server_components"
+      },
+      "states": {
+        "minecoins:drive": [
+          false,
+          true
+        ]
+      }
+    },
+    "components": {
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "mcn_storage_terminal",
+          "render_method": "opaque",
+          "face_dimming": true,
+          "ambient_occlusion": true
+        }
+      },
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 1.2
+      },
+      "minecraft:destructible_by_explosion": {
+        "explosion_resistance": 6
+      },
+      "minecraft:map_color": "#2b3550",
+      "minecraft:light_emission": 4,
+      "minecraft:geometry": "minecraft:geometry.full_block"
+    },
+    "permutations": [
+      {
+        "condition": "q.block_state('minecoins:drive') == false",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "mcn_storage_terminal",
+              "render_method": "opaque",
+              "face_dimming": true,
+              "ambient_occlusion": true
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecoins:drive') == true",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "mcn_storage_terminal_drive",
+              "render_method": "opaque",
+              "face_dimming": true,
+              "ambient_occlusion": true
+            }
+          }
+        }
+      }
+    ]
+  }
+}
