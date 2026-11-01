@@ -1,0 +1,62 @@
+[
+  {
+    "flipbook_texture": "textures/blocks/mcn_server_rack",
+    "atlas_tile": "mcn_server_rack",
+    "ticks_per_frame": 4,
+    "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "flipbook_texture": "textures/blocks/mcn_server_rack_cool",
+    "atlas_tile": "mcn_server_rack_cool",
+    "ticks_per_frame": 4,
+    "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "flipbook_texture": "textures/blocks/mcn_server_rack_batt",
+    "atlas_tile": "mcn_server_rack_batt",
+    "ticks_per_frame": 4,
+    "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "flipbook_texture": "textures/blocks/mcn_server_rack_both",
+    "atlas_tile": "mcn_server_rack_both",
+    "ticks_per_frame": 4,
+    "frames": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  }
+]

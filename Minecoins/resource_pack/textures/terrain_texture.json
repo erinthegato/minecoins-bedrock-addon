@@ -30,6 +30,15 @@
     },
     "mcn_monitor": {
       "textures": "textures/blocks/mcn_monitor"
+    },
+    "mcn_server_rack_cool": {
+      "textures": "textures/blocks/mcn_server_rack_cool"
+    },
+    "mcn_server_rack_batt": {
+      "textures": "textures/blocks/mcn_server_rack_batt"
+    },
+    "mcn_server_rack_both": {
+      "textures": "textures/blocks/mcn_server_rack_both"
     }
   }
 }

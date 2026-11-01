@@ -14,7 +14,7 @@ UUID_BP_DATA = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02"
 UUID_BP_SCRIPT = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03"
 UUID_RP = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04"
 UUID_RP_RES = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05"
-VERSION = [1, 6, 0]
+VERSION = [1, 7, 0]
 
 # Creative menu: one collapsible group per tab. The same names are declared
 # on the block/item definitions and in item_catalog/crafting_item_catalog.json
@@ -77,6 +77,25 @@ def cube(origin, size):
 
 
 RACK_SIDES = [("north", 1), ("south", 2), ("east", 4), ("west", 8)]
+
+# A rack takes two installable modules; the state repaints the whole cabinet.
+MODULES = ["none", "cooling", "battery", "both"]
+RACK_TEX = {
+    "none": "mcn_server_rack",
+    "cooling": "mcn_server_rack_cool",
+    "battery": "mcn_server_rack_batt",
+    "both": "mcn_server_rack_both",
+}
+RACK_FRAMES = 8
+
+
+def rack_material(module):
+    return {"*": {
+        "texture": RACK_TEX[module],
+        "render_method": "opaque",
+        "face_dimming": True,
+        "ambient_occlusion": True,
+    }}
 
 
 def rack_box(mask=0):
@@ -157,26 +176,30 @@ for name, colour, hardness, light in BLOCKS:
         description["states"] = {
             f"minecoins:{side}": [False, True] for side, _bit in RACK_SIDES
         }
+        description["states"]["minecoins:module"] = MODULES
         box0 = rack_box(0)
         components["minecraft:geometry"] = "geometry.mcn_server_rack_0"
         components["minecraft:collision_box"] = box0
         components["minecraft:selection_box"] = box0
+        components["minecraft:material_instances"] = rack_material("none")
         permutations = []
         for mask in range(16):
-            condition = " && ".join(
+            links = " && ".join(
                 f"q.block_state('minecoins:{side}') == "
                 f"{'true' if mask & bit else 'false'}"
                 for side, bit in RACK_SIDES
             )
             box = rack_box(mask)
-            permutations.append({
-                "condition": condition,
-                "components": {
-                    "minecraft:geometry": f"geometry.mcn_server_rack_{mask}",
-                    "minecraft:collision_box": box,
-                    "minecraft:selection_box": box,
-                },
-            })
+            for module in MODULES:
+                permutations.append({
+                    "condition": f"{links} && q.block_state('minecoins:module') == '{module}'",
+                    "components": {
+                        "minecraft:geometry": f"geometry.mcn_server_rack_{mask}",
+                        "minecraft:collision_box": box,
+                        "minecraft:selection_box": box,
+                        "minecraft:material_instances": rack_material(module),
+                    },
+                })
     elif name == "monitor":
         # wall terminal: item-frame style panel rotated to the wall it is on
         description["traits"] = {
@@ -455,14 +478,16 @@ write(os.path.join(RP, "manifest.json"), {
 # ---------------------------------------------------------------- textures
 BLOCK_TEX = [n for n, *_ in BLOCKS]
 
+TEX_DATA = {f"mcn_{n}": {"textures": f"textures/blocks/mcn_{n}"} for n in BLOCK_TEX}
+for module, tex in RACK_TEX.items():
+    TEX_DATA[tex] = {"textures": f"textures/blocks/{tex}"}
+
 write(os.path.join(RP, "textures", "terrain_texture.json"), {
     "resource_pack_name": "minecoins",
     "texture_name": "atlas.terrain",
     "padding": 8,
     "num_mip_levels": 4,
-    "texture_data": {
-        f"mcn_{n}": {"textures": f"textures/blocks/mcn_{n}"} for n in BLOCK_TEX
-    },
+    "texture_data": TEX_DATA,
 })
 
 write(os.path.join(RP, "textures", "item_texture.json"), {
@@ -481,13 +506,16 @@ write(os.path.join(RP, "textures", "item_texture.json"), {
 })
 
 
-def png(path, fn, size=16):
-    w = h = size
+def png(path, fn, size=16, frames=1):
+    """Write a PNG; with frames>1 the frames stack vertically, the layout that
+    flipbook_textures.json expects."""
+    w, h = size, size * frames
     raw = b""
     for y in range(h):
-        raw += b"\x00"
+        raw += bytes([0])
+        frame, yy = y // size, y % size
         for x in range(w):
-            raw += bytes(fn(x, y))
+            raw += bytes(fn(x, yy, frame) if frames > 1 else fn(x, yy))
 
     def chunk(tag, data):
         body = tag + data
@@ -495,7 +523,7 @@ def png(path, fn, size=16):
 
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "wb") as f:
-        f.write(b"\x89PNG\r\n\x1a\n")
+        f.write(bytes([137, 80, 78, 71, 13, 10, 26, 10]))
         f.write(chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 6, 0, 0, 0)))
         f.write(chunk(b"IDAT", zlib.compress(raw, 9)))
         f.write(chunk(b"IEND", b""))
@@ -549,14 +577,27 @@ def tex_cooling_unit(x, y):
     return (172, 206, 222, 255)
 
 
-def tex_server_rack(x, y):
+# front-panel LEDs: one pixel each, blinking red / green / blue per frame
+LEDS = [(2, 4), (13, 4), (3, 9), (12, 9), (6, 12), (9, 12), (7, 6), (10, 6)]
+LED_COLORS = [(255, 70, 70), (70, 255, 130), (90, 150, 255), (255, 70, 70),
+              (70, 255, 130), (90, 150, 255), (255, 210, 80), (120, 230, 255)]
+
+
+def rack_pixel(x, y, module, frame):
+    """One rack frame: chassis, module hardware, and a pixel that blinks."""
     if x == 0 or y == 0 or x == 15 or y == 15:
         return (14, 15, 19, 255)
+    col = (34, 36, 44)
     if y in (3, 4, 8, 9, 12):
-        return (56, 60, 72, 255)
-    if (x, y) in ((2, 4), (13, 4), (2, 9), (13, 9), (6, 12)):
-        return (60, 255, 150, 255)
-    return (34, 36, 44, 255)
+        col = (56, 60, 72)
+    if module in ("cooling", "both") and 5 <= y <= 7 and x % 3 == 0:
+        col = (96, 186, 214)
+    if module in ("battery", "both") and 11 <= x <= 13 and 6 <= y <= 10:
+        col = (58, 200, 120) if y % 2 else (40, 150, 90)
+    for i, led in enumerate(LEDS):
+        if (x, y) == led and (frame * 3 + i * 5) % RACK_FRAMES < 3:
+            col = LED_COLORS[i]
+    return (*col, 255)
 
 
 def tex_radio_tower(x, y):
@@ -696,10 +737,25 @@ def tex_guidebook(x, y):
 
 
 TEXTURES = {
-    **{f"mcn_{n}": globals()[f"tex_{n}"] for n in BLOCK_TEX},
+    **{f"mcn_{n}": globals()[f"tex_{n}"] for n in BLOCK_TEX if n != "server_rack"},
 }
 for n, fn in TEXTURES.items():
     png(os.path.join(RP, "textures", "blocks", f"{n}.png"), fn)
+
+# the rack is a flipbook: one band per frame, LEDs blinking red/green/blue
+for module, tex in RACK_TEX.items():
+    png(os.path.join(RP, "textures", "blocks", f"{tex}.png"),
+        (lambda x, y, f, m=module: rack_pixel(x, y, m, f)), 16, RACK_FRAMES)
+
+write(os.path.join(RP, "textures", "flipbook_textures.json"), [
+    {
+        "flipbook_texture": f"textures/blocks/{tex}",
+        "atlas_tile": tex,
+        "ticks_per_frame": 4,
+        "frames": list(range(RACK_FRAMES)),
+    }
+    for tex in RACK_TEX.values()
+])
 
 ITEM_TEXTURES = {"mcn_tablet": tex_tablet, "mcn_minecoin": tex_minecoin,
                  "mcn_guidebook": tex_guidebook}

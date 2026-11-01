@@ -65,6 +65,17 @@ repeated in `item_catalog/crafting_item_catalog.json`.
 - **LAN cable** - the same continuous pipe on its own network: it only links to
   other LAN cable, radio towers and extenders, so an underground run reads as a
   separate cable route rather than part of the power grid.
+- **Rack modules** - hold a Cooling Unit or a Battery and use it on a rack to bolt
+  it in; the cabinet repaints itself (vent fins, battery cells, or both). Sneak and
+  use the rack to pull the modules back out.
+- **Heat** - a powered rack climbs toward 100%; cooling drives it back down. At
+  100% that rack shuts itself down and stops paying.
+- **Offhand readout** - carry the tablet in your offhand for the nearest server's
+  heat, minecoins per minute and battery charge, without opening a window.
+- **Blinking LEDs** - the rack front is an eight-frame animated texture, red,
+  green and blue pixels stepping through it.
+- **Payout scales with racks** - every powered, cool rack pays 1 minecoin per 5
+  real minutes, minimum 1.
 - A rack is online only when its grid has ≥1 cooling unit **and** stored energy.
   Energy accrues while the chunks are unloaded (rate × elapsed time, capped 6 h).
 - Digital storage needs an online rack within 48 blocks.

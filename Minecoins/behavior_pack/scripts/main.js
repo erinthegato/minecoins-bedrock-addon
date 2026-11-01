@@ -48,6 +48,13 @@ const PIPE_LINKS_BY_TYPE = {
 
 const PIPE_IDS = new Set([B.cable, B.lan]);
 
+/* Rack hardware: modules bolt into the cabinet and repaint it. */
+const MODULE_OF = { [B.battery]: "battery", [B.cooling]: "cooling" };
+const HEAT_MAX = 100;          // a rack that reaches this shuts itself down
+const HEAT_GAIN = 0.9;         // degrees per second while running
+const HEAT_DROP = 2.2;         // degrees per second while cooled
+const RACK_BATTERY_CAP = 1000; // a fitted battery module
+
 function refreshPipe(dim, loc) {
   const b = dim.getBlock(loc);
   if (!b) return;
@@ -77,6 +84,7 @@ function refreshRack(dim, loc) {
     const n = dim.getBlock({ x: loc.x + dx, y: loc.y + dy, z: loc.z + dz });
     states[state] = !!n && n.typeId === B.rack;
   }
+  states["minecoins:module"] = b.permutation.getState("minecoins:module") ?? "none";
   try { b.setPermutation(BlockPermutation.resolve(B.rack, states)); } catch { /* ignore */ }
 }
 
@@ -97,6 +105,7 @@ const P_CHAIN = "mc:chain";
 const P_COINS = "mc:coins";
 const P_LAST = "mc:last";
 const P_STORE = "mc:store";
+const P_HEAT = "mc:heat";
 
 /* ------------------------------------------------------------------ catalog */
 const PRICE = { 1: 2, 2: 6, 3: 14, 4: 25, 5: 50, 6: 75 };
@@ -247,15 +256,47 @@ system.runInterval(() => {
     // Left the world for a while: do not pay out offline time.
     if (gap > COIN_MS * 2) { p.setDynamicProperty(P_LAST, now); continue; }
     if (gap < COIN_MS) continue;
-    let gained = 0;
-    while (now - last >= COIN_MS) { last += COIN_MS; gained++; }
+    let cycles = 0;
+    while (now - last >= COIN_MS) { last += COIN_MS; cycles++; }
     p.setDynamicProperty(P_LAST, last);
+    const paying = Math.max(1, onlineRacks(p.dimension));
+    const gained = paying * cycles;
     const bal = coins(p) + gained;
     setCoins(p, bal);
     ledger(p, gained, "mine");
-    p.sendMessage(`§b[Minecoins] §f+${gained} minecoin§7 · balance §e${bal}`);
+    p.sendMessage(`§b[Minecoins] §f+${gained} minecoin§7 · balance §e${bal}§7 · ${paying} rack${paying === 1 ? "" : "s"} paying`);
     p.playSound("random.orb", { volume: 0.6, pitch: 1.4 });
     p.onScreenDisplay.setActionBar(`§e+${gained} minecoin §7(${bal})`);
+  }
+}, 40);
+
+/* ----------------------------------------------- tablet held in the offhand */
+function offhandTablet(player) {
+  try {
+    const eq = player.getComponent("minecraft:equippable");
+    const item = eq?.getEquipment(EquipmentSlot.Offhand);
+    return !!item && item.typeId === TABLET;
+  } catch { return false; }
+}
+
+system.runInterval(() => {
+  for (const p of world.getAllPlayers()) {
+    if (!offhandTablet(p)) continue;
+    const rack = nearestRack(p);
+    if (!rack) {
+      p.onScreenDisplay.setActionBar("§8[server] §7no rack within 48 blocks");
+      continue;
+    }
+    const g = evalGrid(p.dimension, rack, false);
+    if (!g.rack) continue;
+    const heat = Math.round(Math.max(0, ...g.racks.map((r) => r.heat ?? 0)));
+    const pct = g.capacity ? Math.round((g.energy / g.capacity) * 100) : 0;
+    const heatColour = heat >= 80 ? "§c" : heat >= 45 ? "§e" : "§a";
+    const battColour = pct >= 50 ? "§a" : pct > 10 ? "§e" : "§c";
+    p.onScreenDisplay.setActionBar(
+      `§8[server] §7heat ${heatColour}${heat}%§7 · ` +
+      `§7coins §e${g.perMin.toFixed(1)}§7/min §8(§f${g.live}§7/§f${g.rack}§8)§7 · ` +
+      `§7battery ${battColour}${pct}%§7 · §7solar §f${g.gen}§7/§f${g.draw}§7 EU/s`);
   }
 }, 40);
 
@@ -410,7 +451,8 @@ const BATTERY_CAP = 5000;
 
 function evalGrid(dim, start, apply = true) {
   const counts = { panel: 0, battery: 0, cooling: 0, rack: 0 };
-  const batteries = [];
+  const cells = [];
+  const racks = [];
   const seen = new Set();
   const queue = [start];
   const sx = start.x, sy = start.y, sz = start.z;
@@ -424,10 +466,18 @@ function evalGrid(dim, start, apply = true) {
     if (!b) continue;
     const t = b.typeId;
     if (t === B.panel) counts.panel++;
-    else if (t === B.battery) { counts.battery++; batteries.push({ ...loc }); }
-    else if (t === B.cooling) counts.cooling++;
-    else if (t === B.rack) counts.rack++;
-    else if (t !== B.cable) continue;
+    else if (t === B.battery) {
+      counts.battery++;
+      cells.push({ loc: { x: loc.x, y: loc.y, z: loc.z }, cap: BATTERY_CAP });
+    } else if (t === B.cooling) counts.cooling++;
+    else if (t === B.rack) {
+      counts.rack++;
+      const module = b.permutation.getState("minecoins:module") ?? "none";
+      racks.push({ x: loc.x, y: loc.y, z: loc.z, module });
+      if (module === "battery" || module === "both") {
+        cells.push({ loc: { x: loc.x, y: loc.y, z: loc.z }, cap: RACK_BATTERY_CAP });
+      }
+    } else if (t !== B.cable) continue;
     for (const o of [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]]) {
       queue.push({ x: loc.x + o[0], y: loc.y + o[1], z: loc.z + o[2] });
     }
@@ -437,29 +487,44 @@ function evalGrid(dim, start, apply = true) {
   const draw = counts.rack * DRAW_PER_RACK + counts.cooling * DRAW_PER_COOLER;
   const store = readMap(P_ENERGY);
   const now = Date.now();
+  const capacity = cells.reduce((a, c) => a + c.cap, 0);
   let total = 0;
   let oldest = now;
-  for (const loc of batteries) {
-    const rec = store[locKey(dim.id, loc)];
+  for (const cell of cells) {
+    const rec = store[locKey(dim.id, cell.loc)];
     total += rec && typeof rec.e === "number" ? rec.e : 0;
     if (rec && typeof rec.t === "number") oldest = Math.min(oldest, rec.t);
   }
   const elapsed = Math.min((now - oldest) / 1000, 6 * 3600);
-  total = Math.max(0, Math.min(batteries.length * BATTERY_CAP, total + (gen - draw) * elapsed));
+  total = Math.max(0, Math.min(capacity, total + (gen - draw) * elapsed));
 
   const day = world.getTimeOfDay() < 12000;
+  const coolingModules = racks.filter((r) => r.module === "cooling" || r.module === "both").length;
+  const cooled = counts.cooling > 0 || coolingModules > 0;
   const result = {
-    ok: counts.rack > 0 && counts.cooling > 0 && total > 0,
-    cooled: counts.cooling > 0,
+    ok: counts.rack > 0 && cooled && total > 0,
+    cooled,
     energy: total,
     gen: day ? gen : 0,
     draw,
-    capacity: batteries.length * BATTERY_CAP,
+    capacity,
+    racks,
     ...counts,
   };
-  if (apply && batteries.length) {
-    const each = total / batteries.length;
-    for (const loc of batteries) store[locKey(dim.id, loc)] = { e: each, t: now };
+
+  const heat = apply ? applyHeat(dim, result, now) : readMap(P_HEAT);
+  for (const r of result.racks) {
+    const rec = heat[locKey(dim.id, r)];
+    r.heat = rec && typeof rec.h === "number" ? rec.h : 0;
+  }
+  result.hot = result.racks.filter((r) => r.heat >= HEAT_MAX).length;
+  result.live = result.racks.length - result.hot;
+  result.ok = result.ok && result.live > 0;
+  result.perMin = result.live / 5;
+
+  if (apply && cells.length) {
+    const unit = capacity ? total / capacity : 0;
+    for (const cell of cells) store[locKey(dim.id, cell.loc)] = { e: unit * cell.cap, t: now };
     const keys = Object.keys(store);
     if (keys.length > 250) {
       keys.sort((a, b) => (store[a].t || 0) - (store[b].t || 0));
@@ -468,6 +533,43 @@ function evalGrid(dim, start, apply = true) {
     writeMap(P_ENERGY, store);
   }
   return result;
+}
+
+/** Heat climbs while a powered rack runs and falls once it is cooled. */
+function applyHeat(dim, grid, now) {
+  const map = readMap(P_HEAT);
+  for (const r of grid.racks) {
+    const k = locKey(dim.id, r);
+    const prev = map[k];
+    const dt = prev && typeof prev.t === "number" ? Math.min((now - prev.t) / 1000, 120) : 0;
+    let h = prev && typeof prev.h === "number" ? prev.h : 0;
+    if (grid.energy > 0) h += HEAT_GAIN * dt;
+    if (grid.cooled) h -= HEAT_DROP * dt;
+    map[k] = { h: Math.max(0, Math.min(HEAT_MAX, h)), t: now };
+  }
+  const keys = Object.keys(map);
+  if (keys.length > 250) {
+    keys.sort((a, b) => (map[a].t || 0) - (map[b].t || 0));
+    for (const k of keys.slice(0, keys.length - 250)) delete map[k];
+  }
+  writeMap(P_HEAT, map);
+  return map;
+}
+
+/** Racks that are powered and below the heat limit, one grid at a time. */
+function onlineRacks(dim) {
+  const done = new Set();
+  let n = 0;
+  for (const e of readList(P_RACKS)) {
+    if (e.d !== dim.id) continue;
+    if (done.has(locKey(dim.id, e))) continue;
+    const b = dim.getBlock({ x: e.x, y: e.y, z: e.z });
+    if (!b || b.typeId !== B.rack) continue;
+    const g = evalGrid(dim, e, true);
+    for (const r of g.racks) done.add(locKey(dim.id, r));
+    if (g.energy > 0) n += g.live;
+  }
+  return n;
 }
 
 function nearestRack(player) {
@@ -486,8 +588,9 @@ function serverStatus(player) {
   if (!rack) return { ok: false, why: "§cNo server rack within 48 blocks.", grid: null };
   const grid = evalGrid(player.dimension, rack, true);
   if (!grid.rack) return { ok: false, why: "§cServer rack missing.", grid: null };
-  if (!grid.cooled) return { ok: false, why: "§cServer rack has no cooling unit on its power grid — overheating.", grid };
   if (grid.energy <= 0) return { ok: false, why: "§cNo power — charge a battery with solar panels.", grid };
+  if (!grid.cooled) return { ok: false, why: "§cNo cooling — hold a Cooling Unit and use it on the rack.", grid };
+  if (grid.live === 0) return { ok: false, why: "§cEvery rack is at 100% heat — let the cooling catch up.", grid };
   return { ok: true, why: "§aServer online", grid };
 }
 
@@ -649,6 +752,7 @@ async function openStatus(player, grid) {
       .body(winBody("System Properties", [
         statusLine(grid ?? null),
         `Panels §f${grid?.panel ?? 0}§7  Batteries §f${grid?.battery ?? 0}§7  Cooling §f${grid?.cooling ?? 0}§7  Racks §f${grid?.rack ?? 0}`,
+        `Live racks§8: §f${grid?.live ?? 0}§7/§f${grid?.rack ?? 0}§7 · heat §f${Math.round(Math.max(0, ...(grid?.racks ?? []).map((r) => r.heat ?? 0)))}%§7 · payout §e${(grid?.perMin ?? 0).toFixed(1)}§7/min`,
         `Radio nodes §f${nodes.length}§7 (range §f${RANGE}§7 each)`,
         `Link§8: ${sig.why}`,
         `§8Power flows through power cable; cooling sits on the rack's grid.`,
@@ -811,7 +915,8 @@ const GUIDE_PAGES = [
       "Craft a §fMinecoins Tablet§8: §7iron, glass and redstone.",
       "Craft a §fRadio Tower§8: §7iron, copper and redstone.",
       "Place the tower under open sky, then use the tablet.",
-      "You bank §e1 minecoin§7 every §f5 real minutes§7, with a chat note.",
+      "Every rack that is powered and cool pays §e1§7 per §f5 real minutes§7.",
+      "Hold the tablet in your §foffhand§7 for heat, payout and battery at a glance.",
       "This guide needs no radio signal - read it anywhere.",
     ],
   },
@@ -822,14 +927,18 @@ const GUIDE_PAGES = [
       "§fPower Cable§7 links panels, batteries, racks and coolers.",
       "§fBattery§7 stores §a5000 EU§7 each; charge it, then run the rack.",
       "§fServer Rack§7 draws §c8 EU/s§7, each §fCooling Unit§7 §c3 EU/s§7.",
-      "Pipe arms grow toward whatever they touch - no wrench needed.",
+      "Pipes run one tube per axis, up and down included - no wrench needed.",
+      "The rack front blinks red, green and blue while it is running.",
     ],
   },
   {
     name: "3. Cooling and storage",
     lines: [
-      "A rack with no cooling unit on its grid overheats and refuses to open.",
-      "Wire the cooling unit into the same cable run as the rack.",
+      "A running rack heats up; at §c100%§7 it shuts down and stops paying.",
+      "Hold a §fCooling Unit§7 and use it on a rack to bolt cooling in.",
+      "Hold a §fBattery§7 the same way: §a1000 EU§7 stored inside the rack.",
+      "Sneak and use a rack to pull its modules back out.",
+      "The cabinet repaints itself as modules go in: fins, cells, or both.",
       "Click the rack, or pick My Documents on the tablet, to reach the vault.",
       "Deposit takes your held stack; pick an entry to withdraw 64.",
       "The vault is per player and works within §f48 blocks§7 of the rack.",
@@ -881,6 +990,60 @@ async function openGuide(player) {
   }
 }
 
+/* ----------------------------------------------------------- rack hardware */
+function rackAt(player, loc) {
+  const b = player.dimension.getBlock({ x: loc.x, y: loc.y, z: loc.z });
+  return b && b.typeId === B.rack ? b : null;
+}
+
+function setModuleState(block, module) {
+  const states = { "minecoins:module": module };
+  for (const [state, dx, dy, dz] of RACK_LINKS) {
+    const n = block.dimension.getBlock({
+      x: block.location.x + dx, y: block.location.y + dy, z: block.location.z + dz,
+    });
+    states[state] = !!n && n.typeId === B.rack;
+  }
+  try { block.setPermutation(BlockPermutation.resolve(B.rack, states)); } catch { /* ignore */ }
+}
+
+function installModule(player, loc, want) {
+  const block = rackAt(player, loc);
+  if (!block) return;
+  const cur = block.permutation.getState("minecoins:module") ?? "none";
+  if (cur === "both" || cur === want) {
+    player.sendMessage("§b[Hardware] §7That rack already carries this module.");
+    player.playSound("note.bass");
+    return;
+  }
+  const eq = player.getComponent("minecraft:equippable");
+  const held = eq?.getEquipment(EquipmentSlot.Mainhand);
+  if (!held || held.typeId !== (want === "cooling" ? B.cooling : B.battery)) {
+    player.sendMessage("§b[Hardware] §cHold the module in your mainhand.");
+    return;
+  }
+  if (held.amount > 1) held.amount -= 1;
+  else eq.setEquipment(EquipmentSlot.Mainhand, undefined);
+  setModuleState(block, cur === "none" ? want : "both");
+  player.playSound("random.anvil_use", { volume: 0.5, pitch: 1.4 });
+  player.sendMessage(`§b[Hardware] §f${want === "cooling" ? "Cooling" : "Battery"} module fitted §7· rack repainted`);
+}
+
+function stripModules(player, loc) {
+  const block = rackAt(player, loc);
+  if (!block) return;
+  const cur = block.permutation.getState("minecoins:module") ?? "none";
+  if (cur === "none") {
+    player.sendMessage("§b[Hardware] §7No modules fitted.");
+    return;
+  }
+  if (cur === "cooling" || cur === "both") giveItem(player, B.cooling, 1);
+  if (cur === "battery" || cur === "both") giveItem(player, B.battery, 1);
+  setModuleState(block, "none");
+  player.playSound("random.break", { volume: 0.5 });
+  player.sendMessage("§b[Hardware] §7Modules pulled out and handed back.");
+}
+
 /* ------------------------------------------ physical, clickable block GUIs */
 function openLocalGui(player, typeId) {
   click(player);
@@ -910,6 +1073,22 @@ try {
       const line = `§7[cable] §f${block.typeId.slice(10)}  ${parts.join("   ")}`;
       system.run(() => player.sendMessage(line));
       return;
+    }
+    if (block.typeId === B.rack) {
+      const at = { x: block.location.x, y: block.location.y, z: block.location.z };
+      const want = ev.itemStack ? MODULE_OF[ev.itemStack.typeId] : undefined;
+      if (want) {
+        ev.cancel = true;
+        const player = ev.player;
+        system.run(() => installModule(player, at, want));
+        return;
+      }
+      if (ev.player.isSneaking) {
+        ev.cancel = true;
+        const player = ev.player;
+        system.run(() => stripModules(player, at));
+        return;
+      }
     }
     if (ev.player.isSneaking) return;
     if (![B.rack, B.tower, B.monitor].includes(block.typeId)) return;
