@@ -539,7 +539,8 @@ function evalGrid(dim, start, apply = true) {
     const rec = fuel[locKey(dim.id, g)];
     return !!rec && rec.s > 0;
   }).length;
-  const gen = counts.panel * GEN_PER_PANEL + burning * GEN_PER_GENERATOR;
+  const day = world.getTimeOfDay() < 12000;
+  const gen = (day ? counts.panel * GEN_PER_PANEL : 0) + burning * GEN_PER_GENERATOR;
   const draw = counts.rack * DRAW_PER_RACK + counts.cooling * DRAW_PER_COOLER
     + counts.terminal * DRAW_PER_TERMINAL;
   const store = readMap(P_ENERGY);
@@ -555,14 +556,13 @@ function evalGrid(dim, start, apply = true) {
   const elapsed = Math.min((now - oldest) / 1000, 6 * 3600);
   total = Math.max(0, Math.min(capacity, total + (gen - draw) * elapsed));
 
-  const day = world.getTimeOfDay() < 12000;
   const coolingModules = racks.filter((r) => r.module === "cooling" || r.module === "both").length;
   const cooled = counts.cooling > 0 || coolingModules > 0;
   const result = {
-    ok: counts.rack > 0 && cooled && total > 0,
+    ok: counts.rack > 0 && cooled && (total > 0 || gen > 0),
     cooled,
     energy: total,
-    gen: day ? gen : 0,
+    gen,
     draw,
     capacity,
     racks,
@@ -644,7 +644,7 @@ function payRate(dim) {
     if (!b || b.typeId !== B.rack) continue;
     const g = evalGrid(dim, e, true);
     for (const r of g.racks) done.add(locKey(dim.id, r));
-    if (g.energy > 0) pay += g.pay;
+    if (g.energy > 0 || g.gen > 0) pay += g.pay;
   }
   return pay;
 }
@@ -665,7 +665,7 @@ function serverStatus(player) {
   if (!rack) return { ok: false, why: "§cNo server rack within 48 blocks.", grid: null };
   const grid = evalGrid(player.dimension, rack, true);
   if (!grid.rack) return { ok: false, why: "§cServer rack missing.", grid: null };
-  if (grid.energy <= 0) return { ok: false, why: "§cNo power — charge a battery with solar panels.", grid };
+  if (grid.energy <= 0 && grid.gen <= 0) return { ok: false, why: "§cNo power — feed a generator coal, or charge a battery with solar panels.", grid };
   if (!grid.cooled) return { ok: false, why: "§cNo cooling — hold a Cooling Unit and use it on the rack.", grid };
   if (grid.live === 0) return { ok: false, why: "§cEvery rack is at 100% heat — let the cooling catch up.", grid };
   return { ok: true, why: "§aServer online", grid };
@@ -1243,7 +1243,7 @@ async function openTerminal(player, loc) {
     return;
   }
   const grid = evalGrid(dim, loc, true);
-  if (grid.energy <= 0) {
+  if (grid.energy <= 0 && grid.gen <= 0) {
     player.sendMessage("§b[Terminal] §cNo power — wire it to a generator and feed the firebox.");
     player.playSound("note.bass");
     return;
