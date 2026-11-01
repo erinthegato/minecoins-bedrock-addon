@@ -4,8 +4,7 @@
     "description": {
       "identifier": "minecoins:speed_module_copper",
       "menu_category": {
-        "category": "items",
-        "group": "minecoins:itemGroup.name.server_components"
+        "category": "items"
       }
     },
     "components": {

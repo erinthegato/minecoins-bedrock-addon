@@ -4,8 +4,7 @@
     "description": {
       "identifier": "minecoins:storage_module_netherite",
       "menu_category": {
-        "category": "items",
-        "group": "minecoins:itemGroup.name.server_components"
+        "category": "items"
       }
     },
     "components": {
