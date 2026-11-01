@@ -31,7 +31,7 @@
           {
             "group_identifier": {
               "icon": "minecoins:guidebook",
-              "name": "minecoins:itemGroup.name.hardware"
+              "name": "minecoins:itemGroup.name.guide"
             },
             "items": [
               "minecoins:guidebook"

@@ -14,14 +14,13 @@ UUID_BP_DATA = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02"
 UUID_BP_SCRIPT = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03"
 UUID_RP = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04"
 UUID_RP_RES = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05"
-VERSION = [2, 1, 4]
+VERSION = [2, 1, 5]
 
 # Creative menu: one collapsible group per tab. The same names are declared
 # on the block/item definitions and in item_catalog/crafting_item_catalog.json
 # so a block reaches its group whichever route Minecraft reads first.
 CATALOG_GROUP = "minecoins:itemGroup.name.server_components"
 GUIDE_GROUP = "minecoins:itemGroup.name.guide"
-GUIDE_GROUP = "minecoins:itemGroup.name.hardware"
 HARDWARE_GROUP = "minecoins:itemGroup.name.hardware"
 
 
@@ -523,6 +522,7 @@ lang = [f"tile.minecoins:{n}.name={label}" for n, label in BLOCK_NAMES.items()]
 lang.append("item.minecoins:tablet.name=Minecoins Tablet")
 lang.append(f"{CATALOG_GROUP}=Server Components")
 lang.append(f"{GUIDE_GROUP}=Minecoins Guide")
+lang.append(f"{HARDWARE_GROUP}=Server Hardware")
 lang.append("item.minecoins:guidebook.name=Minecoins Guide")
 for short, label, _stack in HARDWARE:
     lang.append(f"item.minecoins:{short}.name={label}")
