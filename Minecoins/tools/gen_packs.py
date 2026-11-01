@@ -14,7 +14,7 @@ UUID_BP_DATA = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02"
 UUID_BP_SCRIPT = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03"
 UUID_RP = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04"
 UUID_RP_RES = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05"
-VERSION = [2, 1, 9]
+VERSION = [2, 1, 10]
 
 # Creative menu: one collapsible group per tab. The same names are declared
 # on the block/item definitions and in item_catalog/crafting_item_catalog.json
@@ -147,19 +147,27 @@ def monitor_box(direction):
 def pipe_cubes(mask):
     """One pipe, not a fence: a tube crosses the whole block on each axis it is
     connected on, so a run of blocks reads as a single continuous pipe. It pokes
-    nowhere it is not attached, and a junction is a plain crossing."""
+    nowhere it is not attached.
+
+    No two cubes share a visible face plane. A junction used to add a core cube
+    whose top and bottom sat exactly on the through-tubes' faces, which made the
+    middle of the block z-fight; the crossing is now split into arms, and the
+    vertical shaft is inset a hair so it hides inside the horizontal tubes."""
     x = bool(mask & 4 or mask & 8)
     z = bool(mask & 1 or mask & 2)
     y = bool(mask & 16 or mask & 32)
     cubes = []
     if x:
         cubes.append(cube([-8, 6, -2], [16, 4, 4]))
-    if z:
+    if z and x:
+        cubes.append(cube([-2, 6, -8], [4, 4, 6]))
+        cubes.append(cube([-2, 6, 2], [4, 4, 6]))
+    elif z:
         cubes.append(cube([-2, 6, -8], [4, 4, 16]))
-    if x or z:
-        cubes.append(cube([-2, 6, -2], [4, 4, 4]))
     if y:
-        cubes.append(cube([-2, 0, -2], [4, 16, 4]))
+        shaft = 3.8 if (x or z) else 4.0
+        inset = (4.0 - shaft) / 2
+        cubes.append(cube([-2 + inset, 0, -2 + inset], [shaft, 16, shaft]))
     if not cubes:
         cubes.append(cube([-2, 0, -2], [4, 8, 4]))
     return cubes
