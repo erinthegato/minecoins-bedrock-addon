@@ -858,6 +858,45 @@ async function openChain(player) {
 
 /* ---------------------------------------------------------------- tablet UI */
 /* --------------------------------------------------------- tablet desktop */
+/* ------------------------------------------------------------ mineOS shell */
+const OS_NAME = "mineOS-09";
+const WIN_TITLE = `§7§l${OS_NAME}`;
+
+/** Black button label: strips colour codes, box glyphs and doubled spaces. */
+function BTN(text) {
+  return `§0${String(text)
+    .replace(/§./g, "")
+    .replace(/[\u2580-\u259f\u2500-\u257f\u25a0-\u25ff\u25b8\u25be]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()}`;
+}
+
+/** Pressure-plate style click on every GUI press. */
+function click(player) {
+  player.playSound("random.click", { volume: 0.9, pitch: 1.15 });
+}
+
+function winBody(name, lines) {
+  const rows = lines.filter(Boolean).join("\n");
+  return `${name}\n\n${rows}`;
+}
+
+async function show(form, player) {
+  try {
+    const res = await form.show(player);
+    if (res && res.selection !== undefined) click(player);
+    return res;
+  } catch {
+    return { canceled: true };
+  }
+}
+
+function statusLine(grid) {
+  if (!grid) return "§7Power: §cno grid";
+  const pct = grid.capacity ? Math.round((grid.energy / grid.capacity) * 100) : 0;
+  return `§7Energy §e${Math.round(grid.energy)}§7/${grid.capacity} (§a${pct}%§7) · §7gen §f${grid.gen}§7 · draw §f${grid.draw} EU/s`;
+}
+
 /* Form button icons: paths into the resource pack's item atlas. */
 const UI_ICON = {
   computer: "textures/items/mcn_icon_computer",
