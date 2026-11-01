@@ -10,6 +10,46 @@
 import { world, system, ItemStack, EquipmentSlot, BlockPermutation } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
 
+const VERSION = "2.1.7";
+
+/** Content-log reporter: every note is prefixed so it is easy to find. */
+function LOG(message) {
+  try {
+    console.warn(`[Minecoins] ${message}`);
+  } catch {}
+}
+
+/**
+ * Subscribe defensively. A missing event, or a handler that throws, must not
+ * take the whole script down, and either failure has to reach the content log.
+ */
+function on(getEvent, label, handler) {
+  let evt;
+  try {
+    evt = getEvent();
+  } catch (err) {
+    LOG(`${label} unavailable: ${err && err.message ? err.message : err}`);
+    return false;
+  }
+  if (!evt || typeof evt.subscribe !== "function") {
+    LOG(`${label} unavailable in this game version`);
+    return false;
+  }
+  try {
+    evt.subscribe((e) => {
+      try {
+        handler(e);
+      } catch (err) {
+        LOG(`${label} failed: ${err && err.message ? err.message : err}`);
+      }
+    });
+    return true;
+  } catch (err) {
+    LOG(`could not subscribe to ${label}: ${err && err.message ? err.message : err}`);
+    return false;
+  }
+}
+
 const COIN_MS = 300000; // 5 real minutes
 const RANGE = 1500;
 const RACK_REACH = 48;
@@ -339,7 +379,7 @@ system.runInterval(() => {
 }, 40);
 
 /* ------------------------------------------------------------- block events */
-world.afterEvents.playerPlaceBlock.subscribe((ev) => {
+on(() => world.afterEvents.playerPlaceBlock, "playerPlaceBlock", (ev) => {
   const id = ev.block.typeId;
   const e = {
     d: ev.block.dimension.id,
@@ -361,7 +401,7 @@ world.afterEvents.playerPlaceBlock.subscribe((ev) => {
   }
 });
 
-world.afterEvents.playerBreakBlock.subscribe((ev) => {
+on(() => world.afterEvents.playerBreakBlock, "playerBreakBlock", (ev) => {
   const id = ev.brokenBlockPermutation.type.id;
   const e = {
     d: ev.block.dimension.id,
@@ -1330,7 +1370,7 @@ function openLocalGui(player, typeId, loc) {
 }
 
 try {
-  world.beforeEvents.playerInteractWithBlock.subscribe((ev) => {
+  on(() => world.beforeEvents.playerInteractWithBlock, "playerInteractWithBlock", (ev) => {
     const block = ev.block;
     if (!block) return;
     if (PIPE_IDS.has(block.typeId) && ev.player.isSneaking) {
@@ -1409,7 +1449,7 @@ try {
   // Engine without this before-event: the tablet remains the entry point.
 }
 
-world.afterEvents.itemUse.subscribe((ev) => {
+on(() => world.afterEvents.itemUse, "itemUse", (ev) => {
   const item = ev.itemStack;
   if (!item) return;
   const player = ev.source;
@@ -1426,7 +1466,7 @@ world.afterEvents.itemUse.subscribe((ev) => {
 });
 
 /* first join: a fresh ledger entry so balances are auditable */
-world.afterEvents.playerSpawn.subscribe((ev) => {
+on(() => world.afterEvents.playerSpawn, "playerSpawn", (ev) => {
   if (!ev.initialSpawn) return;
   const p = ev.player;
   p.setDynamicProperty(P_LAST, Date.now());
@@ -1438,3 +1478,5 @@ world.afterEvents.playerSpawn.subscribe((ev) => {
     p.sendMessage("§b[Minecoins] §fWelcome — you mine 1 minecoin every 5 real minutes. Craft a Minecoins Tablet.");
   }
 });
+
+LOG(`script ${VERSION} loaded`);
