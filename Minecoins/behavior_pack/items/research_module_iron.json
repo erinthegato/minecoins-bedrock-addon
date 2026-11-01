@@ -4,7 +4,8 @@
     "description": {
       "identifier": "minecoins:research_module_iron",
       "menu_category": {
-        "category": "items"
+        "category": "items",
+        "group": "minecoins:itemGroup.name.hardware"
       }
     },
     "components": {

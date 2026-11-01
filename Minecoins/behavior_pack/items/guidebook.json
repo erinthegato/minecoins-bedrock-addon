@@ -5,7 +5,7 @@
       "identifier": "minecoins:guidebook",
       "menu_category": {
         "category": "items",
-        "group": "minecoins:itemGroup.name.guide"
+        "group": "minecoins:itemGroup.name.hardware"
       }
     },
     "components": {

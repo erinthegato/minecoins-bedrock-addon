@@ -14,13 +14,15 @@ UUID_BP_DATA = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02"
 UUID_BP_SCRIPT = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03"
 UUID_RP = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04"
 UUID_RP_RES = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05"
-VERSION = [2, 1, 3]
+VERSION = [2, 1, 4]
 
 # Creative menu: one collapsible group per tab. The same names are declared
 # on the block/item definitions and in item_catalog/crafting_item_catalog.json
 # so a block reaches its group whichever route Minecraft reads first.
 CATALOG_GROUP = "minecoins:itemGroup.name.server_components"
 GUIDE_GROUP = "minecoins:itemGroup.name.guide"
+GUIDE_GROUP = "minecoins:itemGroup.name.hardware"
+HARDWARE_GROUP = "minecoins:itemGroup.name.hardware"
 
 
 def write(path, obj):
@@ -353,7 +355,7 @@ for short, label, stack in HARDWARE:
         "minecraft:item": {
             "description": {
                 "identifier": f"minecoins:{short}",
-                "menu_category": {"category": "items"},
+                "menu_category": {"category": "items", "group": HARDWARE_GROUP},
             },
             "components": {
                 "minecraft:icon": {"textures": {"default": f"mcn_{short}"}},
@@ -388,7 +390,13 @@ write(os.path.join(BP, "item_catalog", "crafting_item_catalog.json"), {
                 "category_name": "items",
                 "groups": [
                     group("minecoins:guidebook", GUIDE_GROUP, ["minecoins:guidebook"]),
-                    {"items": [f"minecoins:{short}" for short, _l, _s in HARDWARE]},
+                    {
+                        "group_identifier": {
+                            "name": HARDWARE_GROUP,
+                            "icon": "minecoins:flash_drive",
+                        },
+                        "items": [f"minecoins:{short}" for short, _l, _s in HARDWARE],
+                    },
                 ],
             },
             {

@@ -31,13 +31,17 @@
           {
             "group_identifier": {
               "icon": "minecoins:guidebook",
-              "name": "minecoins:itemGroup.name.guide"
+              "name": "minecoins:itemGroup.name.hardware"
             },
             "items": [
               "minecoins:guidebook"
             ]
           },
           {
+            "group_identifier": {
+              "name": "minecoins:itemGroup.name.hardware",
+              "icon": "minecoins:flash_drive"
+            },
             "items": [
               "minecoins:flash_drive",
               "minecoins:speed_module_copper",
