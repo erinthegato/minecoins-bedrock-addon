@@ -4,7 +4,7 @@
  * - Digital storage (server rack, requires power + cooling)
  * - Power grid: solar panels -> power cable -> battery -> server rack / cooling
  * - Radio: tower (1500 block range), extenders repeat the network
- * - Underground: no radio signal, must run LAN cable from a tower
+ * - Underground: no radio signal; vault reached by flash drive + terminal
  * - Catalog: buy nearly every obtainable item, diamond tier most expensive
  */
 import { world, system, ItemStack, EquipmentSlot, BlockPermutation } from "@minecraft/server";
@@ -898,7 +898,7 @@ async function openNetwork(player) {
         `§7Range per hop§8: §f${RANGE} §7blocks`,
         `§7Position§8: ${isUnderground(player) ? "§cunderground" : "§asurface"}`,
         `§7Link§8: ${sig.why}`,
-        `§8LAN cable links an underground run back to a tower.`,
+        `§8Underground needs a paired drive in a powered terminal, not radio.`,
       ]))
       .button(BTN("§8[§9 OK §8]")),
     player

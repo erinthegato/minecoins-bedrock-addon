@@ -19,14 +19,15 @@ server/radio infrastructure it depends on.
 
 ### Guide book
 `minecoins:guidebook` is a shapeless craft (book + redstone + glass) and every
-player gets one on their first spawn. Using it opens a five-chapter help
-window: start here, power grid, cooling and storage, radio and LAN, minecoins
-and the store. It works anywhere - no radio needed - and it is listed in the
+player gets one on their first spawn. Using it opens a six-chapter help
+window: start here, power grid, cooling and storage, radio and flash drives,
+upgrades, minecoins and the store. It works anywhere - no radio needed - and it is listed in the
 creative menu under the **Items** tab.
 
 ### Creative menu
-All nine blocks sit in a collapsible group, **Server Components**, at the end of
-the Construction tab. The tablet is in Equipment; the guide book is in Items. Group membership is declared on every block and item and
+All ten blocks sit in a collapsible group, **Server Components**, at the end of
+the Construction tab. The flash drive and the three modules sit in the same group
+under Items. The tablet is in Equipment; the guide book is in Items. Group membership is declared on every block and item and
 repeated in `item_catalog/crafting_item_catalog.json`.
 
 ## Features
@@ -43,6 +44,9 @@ repeated in `item_catalog/crafting_item_catalog.json`.
 - Pricing tiers (coins): base **2**, common **6**, mid **14**, high **25**,
   **Diamond equipment 50**, **diamonds / diamond blocks & ore 75** —
   diamonds are the premium tier, enchanted books (25) sit directly below it.
+- The store is **gated**: tiers 1-2 are open from the start, Research I opens
+  tier 3, II opens tiers 4 and 5, and III opens diamonds. Every crafting recipe
+  stays available in survival regardless.
 - Excluded by design: End City loot (elytra, shulker shell/box, dragon head,
   end crystals) and dungeon-only items (spawners, enchanted golden apple,
   command-only blocks).
@@ -85,22 +89,28 @@ repeated in `item_catalog/crafting_item_catalog.json`.
 - **The store is gated** - cheap tiers are open from the start, diamonds and the
   expensive half need Research I-III fitted. Everything is still craftable in
   survival.
-- A rack is online only when its grid has ≥1 cooling unit **and** stored energy.
-  Energy accrues while the chunks are unloaded (rate × elapsed time, capped 6 h).
-- Digital storage needs an online rack within 48 blocks.
+- A rack is online when its grid holds energy and cooling — a fitted cooling
+  module or a cooling unit on the same run. Energy accrues while the chunks are
+  unloaded (rate × elapsed time, capped 6 h).
+- A vault is readable at the rack itself, or anywhere through a paired drive in a
+  powered storage terminal.
 
 ### Digital storage
-- Per-player virtual vault. Deposit the held stack, withdraw up to 64 of any
-  stored type, paginated 15 per page. Survives death and dimension changes.
+- Per-player virtual vault, opened at a rack or through a drive in a terminal.
+  Survives death and dimension changes.
+- Slots, not unlimited stacks: a rack opens **27**, each Storage Module adds 27
+  more, and one slot holds one stack of 64.
+- Deposit and withdraw 1, 8, 16, 32, 64 at a time (or the whole held stack),
+  paginated 15 entries per page. The slot check runs before anything moves.
 
 ### Tablet + radio
 - **Minecoins Tablet** opens the GUI only with a live signal.
 - **Radio tower** covers 1500 blocks; **radio extenders** chain the network
   (each hop up to 1500 blocks from a live node). Tablets work anywhere inside
   the chained coverage.
-- **Underground = no signal.** The tablet checks the 40 blocks above you; if you
-  are covered, you need **LAN cable** running from a tower down to within 8
-  blocks of you. One continuous cable run lights the network back up.
+- **Underground = no signal.** The tablet checks the 40 blocks above you. Your
+  vault is still reachable down there: pair a flash drive at the server, carry it
+  down, and insert it into a powered storage terminal.
 
 ### Clickable GUIs
 - Every menu is button-driven: tap a button and it plays the pressure-plate
@@ -118,7 +128,8 @@ repeated in `item_catalog/crafting_item_catalog.json`.
   press - no pointer state and no screen re-opening behind you.
 - **Right-click a server rack** for digital storage, a **radio tower** for
   network status, or a **monitor** for the full desktop — a monitor needs the
-  same radio/LAN link as the tablet. Sneak to place blocks against them.
+  same radio link as the tablet. Sneak to place blocks against them, and sneak +
+  use a rack to pull its modules back out.
 
 ### Monitor
 - Wall-mounted terminal with item-frame style geometry: a 14x14 panel 1 pixel
@@ -136,7 +147,12 @@ repeated in `item_catalog/crafting_item_catalog.json`.
 | Server rack | iron top/bottom rows, chest–redstone–chest middle |
 | Radio tower | copper on top, iron–redstone–iron, iron row |
 | Radio extender | copper–redstone–copper |
-| LAN cable ×4 | checker of copper ingot and string |
+| Generator | iron ring, furnace centre, redstone corners |
+| Storage terminal | iron corners, glass sides, redstone centre |
+| Flash drive | iron, redstone and copper checker |
+| Speed module | gold corners, redstone sides, sugar centre |
+| Storage module | iron corners, redstone sides, chest centre |
+| Research module | book corners, redstone sides, amethyst centre |
 | Minecoins Tablet | iron corners, glass sides, redstone centre |
 | Monitor | iron corners, glass frame, redstone centre |
 
@@ -148,13 +164,14 @@ repeated in `item_catalog/crafting_item_catalog.json`.
    put the cooling unit on the same cable run.
 3. Place the rack near where you play (within 48 blocks).
 4. Right-click with the tablet → **Digital storage**, then **Buy items**.
-5. Going mining? Run LAN cable from the tower down to your base.
+5. Going mining? Pair a flash drive at the rack, craft a storage terminal, feed
+   the generator some coal, and insert the drive down there.
 
 ## Notes / limits
 
 - Grid = blocks touching each other through cable; separate runs are separate grids.
 - Solar output follows world daytime (`getTimeOfDay`), not weather.
 - "Underground" is detected by the block column above the player, so a roofed
-  build counts too — run LAN cable to it.
+  build counts too — use a drive and a terminal instead of radio.
 - Catalog names come from item ids; a few bedrock-only id differences are
   normalised, and any item the game rejects is not charged (purchase fails safe).

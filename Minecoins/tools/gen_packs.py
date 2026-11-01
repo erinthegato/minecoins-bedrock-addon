@@ -14,7 +14,7 @@ UUID_BP_DATA = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02"
 UUID_BP_SCRIPT = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03"
 UUID_RP = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04"
 UUID_RP_RES = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05"
-VERSION = [2, 0, 0]
+VERSION = [2, 0, 1]
 
 # Creative menu: one collapsible group per tab. The same names are declared
 # on the block/item definitions and in item_catalog/crafting_item_catalog.json
@@ -47,7 +47,7 @@ BLOCKS = [
 
 HALF_BLOCKS = {"battery", "cooling_unit"}
 FLAT_BLOCKS = {"solar_panel"}
-PIPE_BLOCKS = {"power_cable", "lan_cable"}
+PIPE_BLOCKS = {"power_cable"}
 CARDINALS = ["north", "south", "east", "west"]
 PIPE_DIRECTIONS = [
     ("north", (0, 0, -1), 1),
@@ -693,14 +693,6 @@ def tex_radio_extender(x, y):
     return (70, 62, 58, 255)
 
 
-def tex_lan_cable(x, y):
-    if x in (0, 15) or y in (0, 15):
-        return (48, 34, 18, 255)
-    if 6 <= x <= 9 and 6 <= y <= 9:
-        return (60, 44, 28, 255)
-    return (206, 130, 46, 255)
-
-
 def tex_generator(x, y, lit):
     if x == 0 or y == 0 or x == 15 or y == 15:
         return (30, 24, 18, 255)
@@ -739,18 +731,6 @@ def tex_flash_drive(x, y):
     return (0, 0, 0, 0)
 
 
-def tex_module_speed(x, y):
-    return module_icon(x, y, (214, 78, 62))
-
-
-def tex_module_storage(x, y):
-    return module_icon(x, y, (62, 190, 118))
-
-
-def tex_module_research(x, y):
-    return module_icon(x, y, (168, 110, 226))
-
-
 def module_icon(x, y, tint):
     if x < 2 or y < 2 or x > 13 or y > 13:
         return (0, 0, 0, 0)
@@ -761,6 +741,18 @@ def module_icon(x, y, tint):
     if 5 <= x <= 10 and 5 <= y <= 10:
         return (*tint, 255)
     return (38, 44, 56, 255)
+
+
+def tex_module_speed(x, y):
+    return module_icon(x, y, (214, 78, 62))
+
+
+def tex_module_storage(x, y):
+    return module_icon(x, y, (62, 190, 118))
+
+
+def tex_module_research(x, y):
+    return module_icon(x, y, (168, 110, 226))
 
 
 def tex_monitor(x, y):
