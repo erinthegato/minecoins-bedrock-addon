@@ -14,7 +14,18 @@ UUID_BP_DATA = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02"
 UUID_BP_SCRIPT = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03"
 UUID_RP = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04"
 UUID_RP_RES = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05"
-VERSION = [2, 1, 10]
+VERSION = [2, 1, 11]
+
+# Keep the script's own banner from drifting away from the manifest version.
+_SCRIPT = os.path.join(BP, "scripts", "main.js")
+_src = open(_SCRIPT, encoding="utf-8").read()
+_marker = 'const VERSION = "'
+_at = _src.find(_marker)
+if _at >= 0:
+    _end = _src.find('"', _at + len(_marker))
+    _stamp = ".".join(str(n) for n in VERSION)
+    _out = _src[:_at] + _marker + _stamp + _src[_end:]
+    open(_SCRIPT, "w", encoding="utf-8", newline=chr(10)).write(_out)
 
 # Creative menu: one collapsible group per tab. The same names are declared
 # on the block/item definitions and in item_catalog/crafting_item_catalog.json

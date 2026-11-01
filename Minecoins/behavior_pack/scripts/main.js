@@ -10,7 +10,7 @@
 import { world, system, ItemStack, EquipmentSlot, BlockPermutation } from "@minecraft/server";
 import { ActionFormData, FormCancelationReason } from "@minecraft/server-ui";
 
-const VERSION = "2.1.7";
+const VERSION = "2.1.11";
 
 /** Content-log reporter: every note is prefixed so it is easy to find. */
 function LOG(message) {
@@ -929,25 +929,41 @@ const sleep = (ticks) => new Promise((resolve) => system.runTimeout(() => resolv
  * cancel looks exactly like the player closing the screen, so retry instead of
  * treating it as a cancel.
  */
+const FORM_OPEN = new Set();
+
 async function show(form, player, label = "form") {
-  for (let attempt = 0; attempt < 25; attempt++) {
-    let res;
-    try {
-      res = await form.show(player);
-    } catch (err) {
-      LOG(`${label} failed to open: ${err && err.message ? err.message : err}`);
-      return { canceled: true };
-    }
-    if (res && res.canceled && res.cancelationReason === FormCancelationReason.UserBusy) {
-      await sleep(2);
-      continue;
-    }
-    if (res && res.selection !== undefined) click(player);
-    return res;
+  const key = player.id ?? player.name;
+  if (FORM_OPEN.has(key)) {
+    LOG(`${label} skipped: another screen is already opening for ${player.name}`);
+    return { canceled: true };
   }
-  LOG(`${label} stayed busy and was abandoned`);
-  player.sendMessage("§b[mineOS] §cThe screen stayed busy — use it again.");
-  return { canceled: true };
+  FORM_OPEN.add(key);
+  try {
+    await sleep(2);
+    for (let attempt = 0; attempt < 20; attempt++) {
+      let res;
+      try {
+        res = await form.show(player);
+      } catch (err) {
+        LOG(`${label} failed to open: ${err && err.message ? err.message : err}`);
+        return { canceled: true };
+      }
+      if (res && res.canceled && res.cancelationReason === FormCancelationReason.UserBusy) {
+        if (attempt === 4) {
+          LOG(`${label} still busy (${res.cancelationReason}) for ${player.name}`);
+        }
+        await sleep(3);
+        continue;
+      }
+      if (res && res.selection !== undefined) click(player);
+      return res;
+    }
+    LOG(`${label} stayed busy and was abandoned for ${player.name}`);
+    player.sendMessage("§b[mineOS] §cThe screen stayed busy — use it again.");
+    return { canceled: true };
+  } finally {
+    FORM_OPEN.delete(key);
+  }
 }
 
 function statusLine(grid) {
