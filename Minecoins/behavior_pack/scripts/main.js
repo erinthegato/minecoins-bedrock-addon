@@ -858,6 +858,15 @@ async function openChain(player) {
 
 /* ---------------------------------------------------------------- tablet UI */
 /* --------------------------------------------------------- tablet desktop */
+/* Form button icons: paths into the resource pack's item atlas. */
+const UI_ICON = {
+  computer: "textures/items/mcn_icon_computer",
+  store: "textures/items/mcn_icon_store",
+  coins: "textures/items/mcn_icon_coins",
+  docs: "textures/items/mcn_icon_docs",
+  shutdown: "textures/items/mcn_icon_shutdown",
+};
+
 /* Plain server-form desktop: one button per program, no pointer state. */
 const PROGRAMS = [
   { name: "My Computer", act: "status", icon: UI_ICON.computer },
