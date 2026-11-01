@@ -1,0 +1,33 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "minecoins:speed_module_netherite"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "unlock": {
+      "context": "AlwaysUnlocked"
+    },
+    "pattern": [
+      "MRM",
+      " S "
+    ],
+    "key": {
+      "M": {
+        "item": "minecraft:netherite_ingot"
+      },
+      "R": {
+        "item": "minecraft:redstone"
+      },
+      "S": {
+        "item": "minecraft:sugar"
+      }
+    },
+    "result": {
+      "item": "minecoins:speed_module_netherite",
+      "count": 1
+    }
+  }
+}

@@ -2,7 +2,7 @@
   "format_version": "1.21.60",
   "minecraft:item": {
     "description": {
-      "identifier": "minecoins:speed_module",
+      "identifier": "minecoins:storage_module_iron",
       "menu_category": {
         "category": "items",
         "group": "minecoins:itemGroup.name.server_components"
@@ -11,11 +11,11 @@
     "components": {
       "minecraft:icon": {
         "textures": {
-          "default": "mcn_speed_module"
+          "default": "mcn_storage_module_iron"
         }
       },
       "minecraft:display_name": {
-        "value": "Speed Module"
+        "value": "Iron Storage Module"
       },
       "minecraft:max_stack_size": 16
     }

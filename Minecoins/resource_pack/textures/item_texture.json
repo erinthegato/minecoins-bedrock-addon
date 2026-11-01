@@ -29,14 +29,50 @@
     "mcn_flash_drive": {
       "textures": "textures/items/mcn_flash_drive"
     },
-    "mcn_speed_module": {
-      "textures": "textures/items/mcn_speed_module"
+    "mcn_speed_module_copper": {
+      "textures": "textures/items/mcn_speed_module_copper"
     },
-    "mcn_storage_module": {
-      "textures": "textures/items/mcn_storage_module"
+    "mcn_storage_module_copper": {
+      "textures": "textures/items/mcn_storage_module_copper"
     },
-    "mcn_research_module": {
-      "textures": "textures/items/mcn_research_module"
+    "mcn_research_module_copper": {
+      "textures": "textures/items/mcn_research_module_copper"
+    },
+    "mcn_speed_module_iron": {
+      "textures": "textures/items/mcn_speed_module_iron"
+    },
+    "mcn_storage_module_iron": {
+      "textures": "textures/items/mcn_storage_module_iron"
+    },
+    "mcn_research_module_iron": {
+      "textures": "textures/items/mcn_research_module_iron"
+    },
+    "mcn_speed_module_lapis": {
+      "textures": "textures/items/mcn_speed_module_lapis"
+    },
+    "mcn_storage_module_lapis": {
+      "textures": "textures/items/mcn_storage_module_lapis"
+    },
+    "mcn_research_module_lapis": {
+      "textures": "textures/items/mcn_research_module_lapis"
+    },
+    "mcn_speed_module_diamond": {
+      "textures": "textures/items/mcn_speed_module_diamond"
+    },
+    "mcn_storage_module_diamond": {
+      "textures": "textures/items/mcn_storage_module_diamond"
+    },
+    "mcn_research_module_diamond": {
+      "textures": "textures/items/mcn_research_module_diamond"
+    },
+    "mcn_speed_module_netherite": {
+      "textures": "textures/items/mcn_speed_module_netherite"
+    },
+    "mcn_storage_module_netherite": {
+      "textures": "textures/items/mcn_storage_module_netherite"
+    },
+    "mcn_research_module_netherite": {
+      "textures": "textures/items/mcn_research_module_netherite"
     }
   }
 }

@@ -44,9 +44,10 @@ repeated in `item_catalog/crafting_item_catalog.json`.
 - Pricing tiers (coins): base **2**, common **6**, mid **14**, high **25**,
   **Diamond equipment 50**, **diamonds / diamond blocks & ore 75** —
   diamonds are the premium tier, enchanted books (25) sit directly below it.
-- The store is **gated**: tiers 1-2 are open from the start, Research I opens
-  tier 3, II opens tiers 4 and 5, and III opens diamonds. Every crafting recipe
-  stays available in survival regardless.
+- The store is **gated by band**: Blocks open, Materials and Food at copper,
+  Redstone at iron, Tools and Armor at lapis, Enchanted Books at diamond, the
+  diamond catalogue at netherite. Every crafting recipe stays available in
+  survival regardless.
 - Excluded by design: End City loot (elytra, shulker shell/box, dragon head,
   end crystals) and dungeon-only items (spawners, enchanted golden apple,
   command-only blocks).
@@ -80,14 +81,17 @@ repeated in `item_catalog/crafting_item_catalog.json`.
   green and blue pixels stepping through it.
 - **Payout scales with racks** - every powered, cool rack pays 1 minecoin per 5
   real minutes, minimum 1.
-- **27 slots to start** - a single rack opens 27 vault slots; each Storage Module
-  adds another 27. One slot holds one stack, so bulk counts cost more slots.
-- **Upgrade modules** - Speed, Storage and Research, three tiers each, fitted by
-  holding the module and using it on a rack.
+- **27 slots to start** - a single rack opens 27 vault slots and each Storage
+  module tier adds 27 more, up to 162 on one rack. One slot holds one stack, so
+  bulk counts cost more slots.
+- **Upgrade modules** - Speed, Storage and Research, five tiers each on the usual
+  ladder: **copper, iron, lapis, diamond, netherite**. Fit one by holding it and
+  using it on a rack; a higher tier replaces what is already there.
 - **Generator** - burns coal, charcoal or leaf litter for 40 EU/s, so a base away
   from the solar array still runs.
-- **The store is gated** - cheap tiers are open from the start, diamonds and the
-  expensive half need Research I-III fitted. Everything is still craftable in
+- **The store is gated by catalogue band** - Blocks are open, Materials and Food
+  need copper research, Redstone iron, Tools and Armor lapis, Enchanted Books
+  diamond and the diamond catalogue netherite. Everything is still craftable in
   survival.
 - A rack is online when its grid holds energy and cooling — a fitted cooling
   module or a cooling unit on the same run. Energy accrues while the chunks are
@@ -150,9 +154,8 @@ repeated in `item_catalog/crafting_item_catalog.json`.
 | Generator | iron ring, furnace centre, redstone corners |
 | Storage terminal | iron corners, glass sides, redstone centre |
 | Flash drive | iron, redstone and copper checker |
-| Speed module | gold corners, redstone sides, sugar centre |
-| Storage module | iron corners, redstone sides, chest centre |
-| Research module | book corners, redstone sides, amethyst centre |
+| Speed / Storage / Research module | 2 x tier metal, 1 redstone, and a sugar / chest / amethyst centre |
+| Module tier metal | copper, iron, lapis lazuli, diamond, netherite |
 | Minecoins Tablet | iron corners, glass sides, redstone centre |
 | Monitor | iron corners, glass frame, redstone centre |
 

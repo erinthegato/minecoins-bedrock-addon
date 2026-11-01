@@ -2,7 +2,7 @@
   "format_version": "1.20.10",
   "minecraft:recipe_shaped": {
     "description": {
-      "identifier": "minecoins:speed_module"
+      "identifier": "minecoins:research_module_diamond"
     },
     "tags": [
       "crafting_table"
@@ -11,23 +11,22 @@
       "context": "AlwaysUnlocked"
     },
     "pattern": [
-      "GRG",
-      "RSR",
-      "GRG"
+      "MRM",
+      " S "
     ],
     "key": {
-      "G": {
-        "item": "minecraft:gold_ingot"
+      "M": {
+        "item": "minecraft:diamond"
       },
       "R": {
         "item": "minecraft:redstone"
       },
       "S": {
-        "item": "minecraft:sugar"
+        "item": "minecraft:amethyst_shard"
       }
     },
     "result": {
-      "item": "minecoins:speed_module",
+      "item": "minecoins:research_module_diamond",
       "count": 1
     }
   }

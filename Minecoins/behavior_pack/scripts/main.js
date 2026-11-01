@@ -55,12 +55,24 @@ const HEAT_GAIN = 0.9;         // degrees per second while running
 const HEAT_DROP = 2.2;         // degrees per second while cooled
 const RACK_BATTERY_CAP = 1000; // a fitted battery module
 
-/* Upgrade modules: three tiers each, stacked by fitting more than one. */
-const UPGRADES = {
-  "minecoins:speed_module": { key: "speed", label: "Speed", max: 3 },
-  "minecoins:storage_module": { key: "storage", label: "Storage", max: 3 },
-  "minecoins:research_module": { key: "research", label: "Research", max: 3 },
-};
+/* Upgrade tiers follow vanilla progress: copper, iron, lapis, diamond, netherite. */
+const TIERS = ["copper", "iron", "lapis", "diamond", "netherite"];
+const MAX_TIER = TIERS.length;
+const UPGRADES = {};
+for (const [i, tier] of TIERS.entries()) {
+  for (const track of ["speed", "storage", "research"]) {
+    const cap = (s) => s[0].toUpperCase() + s.slice(1);
+    UPGRADES[`minecoins:${track}_module_${tier}`] = {
+      key: track,
+      tier: i + 1,
+      label: `${cap(tier)} ${cap(track)}`,
+    };
+  }
+}
+function upgradeItem(key, tier) {
+  const i = Math.max(1, Math.min(MAX_TIER, tier)) - 1;
+  return `minecoins:${key}_module_${TIERS[i]}`;
+}
 const DRIVE = "minecoins:flash_drive";
 const STACK = 64;              // one vault slot holds one stack
 const SLOTS_PER_RACK = 27;     // a lone rack opens 27 slots
@@ -72,7 +84,11 @@ const FUEL_SECONDS = {
   "minecraft:charcoal": 45,
   "minecraft:leaf_litter": 6,
 };
-const RESEARCH_GATE = { 1: 0, 2: 0, 3: 1, 4: 2, 5: 2, 6: 3 };
+/* Research opens catalogue bands, one per tier of module. */
+const RESEARCH_UNLOCK = {
+  "Blocks": 0, "Materials": 1, "Food": 1, "Redstone": 2,
+  "Tools": 3, "Armor": 3, "Enchanted Books": 4, "Diamond": 5,
+};
 
 function refreshPipe(dim, loc) {
   const b = dim.getBlock(loc);
@@ -780,11 +796,11 @@ async function openBuy(player, cat, grid) {
       ]))
       .button(BTN("§8[§9 .. (up one level) §8]"), UI_ICON.computer);
     const level = grid ? grid.research ?? 0 : 0;
+    const need = RESEARCH_UNLOCK[cat] ?? 0;
     for (const id of list) {
       const info = BUY.get(id);
-      const need = RESEARCH_GATE[info.tier] ?? 0;
       if (need > level) {
-        form.button(BTN(`§8${info.name} - locked, research ${need}`));
+        form.button(BTN(`§8${info.name} - locked`));
         continue;
       }
       form.button(BTN(`§f${info.name} §7- §e${info.price}`), iconFor(id));
@@ -795,8 +811,8 @@ async function openBuy(player, cat, grid) {
     const id = list[res.selection - 1];
     if (!id) return false;
     const info = BUY.get(id);
-    if ((RESEARCH_GATE[info.tier] ?? 0) > (grid ? grid.research ?? 0 : 0)) {
-      player.sendMessage("§b[Store] §cLocked — fit a Research Module to a rack.");
+    if ((RESEARCH_UNLOCK[cat] ?? 0) > (grid ? grid.research ?? 0 : 0)) {
+      player.sendMessage(`§b[Store] §c${cat} needs research tier ${RESEARCH_UNLOCK[cat]} — fit a module to a rack.`);
       player.playSound("note.bass");
       continue;
     }
@@ -917,7 +933,11 @@ async function openStore(player, grid) {
         `§8Diamonds are the premium tier; books sit just below.`,
       ]))
       .button(BTN("§8[§9 .. (up one level) §8]"), UI_ICON.computer);
-    for (const c of cats) menu.button(BTN(`§8[§f${c} §8]`), UI_ICON.docs);
+    const level = grid ? grid.research ?? 0 : 0;
+    for (const c of cats) {
+      const need = RESEARCH_UNLOCK[c] ?? 0;
+      menu.button(BTN(need > level ? `§8[${c} §7- tier ${need}§8]` : `§8[§f${c} §8]`), UI_ICON.docs);
+    }
     const pick = await show(menu, player);
     if (pick.canceled || pick.selection === undefined || pick.selection === 0) return;
     const cat = cats[pick.selection - 1];
@@ -978,11 +998,12 @@ const GUIDE_PAGES = [
   {
     name: "5. Upgrades",
     lines: [
-      "Modules tier up to three: fit the same one again to raise it.",
-      "§fSpeed Module§7: §e1§7 extra minecoin per 5 minutes, per tier.",
-      "§fStorage Module§7: §f27§7 more vault slots, per tier.",
-      "§fResearch Module§7: unlocks the pricier half of the store.",
-      "Research I opens tiers 3, II opens 4 and 5, III opens diamonds.",
+      "Modules climb the usual ladder: §fcopper, iron, lapis, diamond, netherite§7.",
+      "Speed§8: §e+1§7 minecoin per 5 minutes per tier, up to §e+5§7.",
+      "Storage§8: §f+27§7 vault slots per tier, up to §f162§7 on one rack.",
+      "Research§8: one catalogue band per tier - materials at copper, tools at",
+      "lapis, books at diamond and the diamond catalogue at netherite.",
+      "Fitting a higher tier replaces the module already in that rack.",
     ],
   },
   {
@@ -1197,14 +1218,14 @@ function installModule(player, loc, want) {
   player.sendMessage(`§b[Hardware] §f${want === "cooling" ? "Cooling" : "Battery"} module fitted §7· rack repainted`);
 }
 
-function installUpgrade(player, loc, key, label, max) {
+function installUpgrade(player, loc, key, label, tier) {
   const block = rackAt(player, loc);
   if (!block) return;
   const map = readMap(P_MODS);
   const k = locKey(player.dimension.id, loc);
   const rec = map[k] ?? { speed: 0, storage: 0, research: 0 };
-  if ((rec[key] || 0) >= max) {
-    player.sendMessage(`§b[Hardware] §7${label} is already at tier ${max}.`);
+  if ((rec[key] || 0) >= tier) {
+    player.sendMessage(`§b[Hardware] §7This rack is already at ${label} or better.`);
     player.playSound("note.bass");
     return;
   }
@@ -1213,11 +1234,11 @@ function installUpgrade(player, loc, key, label, max) {
   if (!held) return;
   if (held.amount > 1) held.amount -= 1;
   else eq.setEquipment(EquipmentSlot.Mainhand, undefined);
-  rec[key] = (rec[key] || 0) + 1;
+  rec[key] = tier;
   map[k] = rec;
   writeMap(P_MODS, map);
   player.playSound("random.anvil_use", { volume: 0.5, pitch: 1.2 });
-  player.sendMessage(`§b[Hardware] §f${label} tier ${rec[key]}§7 fitted`);
+  player.sendMessage(`§b[Hardware] §f${label}§7 fitted §8(tier ${tier}/${MAX_TIER})`);
 }
 
 function stripModules(player, loc) {
@@ -1230,8 +1251,9 @@ function stripModules(player, loc) {
   const give = [];
   if (cur === "cooling" || cur === "both") give.push(B.cooling);
   if (cur === "battery" || cur === "both") give.push(B.battery);
-  for (const [id, meta] of Object.entries(UPGRADES)) {
-    for (let n = 0; n < (up[meta.key] ?? 0); n++) give.push(id);
+  for (const key of ["speed", "storage", "research"]) {
+    const tier = up[key] ?? 0;
+    if (tier > 0) give.push(upgradeItem(key, tier));
   }
   if (!give.length) {
     player.sendMessage("§b[Hardware] §7No modules fitted.");
@@ -1310,7 +1332,7 @@ try {
       if (upgrade) {
         ev.cancel = true;
         const player = ev.player;
-        system.run(() => installUpgrade(player, at, upgrade.key, upgrade.label, upgrade.max));
+        system.run(() => installUpgrade(player, at, upgrade.key, upgrade.label, upgrade.tier));
         return;
       }
       const want = ev.itemStack ? MODULE_OF[ev.itemStack.typeId] : undefined;

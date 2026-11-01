@@ -36,6 +36,26 @@
             "items": [
               "minecoins:guidebook"
             ]
+          },
+          {
+            "items": [
+              "minecoins:flash_drive",
+              "minecoins:speed_module_copper",
+              "minecoins:storage_module_copper",
+              "minecoins:research_module_copper",
+              "minecoins:speed_module_iron",
+              "minecoins:storage_module_iron",
+              "minecoins:research_module_iron",
+              "minecoins:speed_module_lapis",
+              "minecoins:storage_module_lapis",
+              "minecoins:research_module_lapis",
+              "minecoins:speed_module_diamond",
+              "minecoins:storage_module_diamond",
+              "minecoins:research_module_diamond",
+              "minecoins:speed_module_netherite",
+              "minecoins:storage_module_netherite",
+              "minecoins:research_module_netherite"
+            ]
           }
         ]
       },

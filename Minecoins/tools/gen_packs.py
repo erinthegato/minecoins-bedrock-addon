@@ -14,7 +14,7 @@ UUID_BP_DATA = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02"
 UUID_BP_SCRIPT = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03"
 UUID_RP = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04"
 UUID_RP_RES = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05"
-VERSION = [2, 0, 1]
+VERSION = [2, 1, 0]
 
 # Creative menu: one collapsible group per tab. The same names are declared
 # on the block/item definitions and in item_catalog/crafting_item_catalog.json
@@ -335,12 +335,17 @@ write(os.path.join(BP, "recipes", "guidebook.json"), {
     },
 })
 
-HARDWARE = [
-    ("flash_drive", "Flash Drive", 1),
-    ("speed_module", "Speed Module", 16),
-    ("storage_module", "Storage Module", 16),
-    ("research_module", "Research Module", 16),
-]
+# Upgrade tiers follow vanilla progression: copper, iron, lapis, diamond, netherite.
+TIERS = ["copper", "iron", "lapis", "diamond", "netherite"]
+TRACKS = ["speed", "storage", "research"]
+HARDWARE = [("flash_drive", "Flash Drive", 1)]
+for _tier in TIERS:
+    for _track in TRACKS:
+        HARDWARE.append((
+            f"{_track}_module_{_tier}",
+            f"{_tier.capitalize()} {_track.capitalize()} Module",
+            16,
+        ))
 for short, label, stack in HARDWARE:
     write(os.path.join(BP, "items", f"{short}.json"), {
         "format_version": "1.21.60",
@@ -380,8 +385,10 @@ write(os.path.join(BP, "item_catalog", "crafting_item_catalog.json"), {
             },
             {
                 "category_name": "items",
-                "groups": [group("minecoins:guidebook", GUIDE_GROUP,
-                                 ["minecoins:guidebook"])],
+                "groups": [
+                    group("minecoins:guidebook", GUIDE_GROUP, ["minecoins:guidebook"]),
+                    {"items": [f"minecoins:{short}" for short, _l, _s in HARDWARE]},
+                ],
             },
             {
                 "category_name": "equipment",
@@ -418,13 +425,26 @@ RECIPES += [
      {"I": "minecraft:iron_ingot", "G": "minecraft:glass", "R": "minecraft:redstone"}, 1),
     ("flash_drive", ["IRI", "RCR", "ICI"],
      {"I": "minecraft:iron_ingot", "R": "minecraft:redstone", "C": "minecraft:copper_ingot"}, 1),
-    ("speed_module", ["GRG", "RSR", "GRG"],
-     {"G": "minecraft:gold_ingot", "R": "minecraft:redstone", "S": "minecraft:sugar"}, 1),
-    ("storage_module", ["IRI", "RCR", "IRI"],
-     {"I": "minecraft:iron_ingot", "R": "minecraft:redstone", "C": "minecraft:chest"}, 1),
-    ("research_module", ["BRB", "RSR", "BRB"],
-     {"B": "minecraft:book", "R": "minecraft:redstone", "S": "minecraft:amethyst_shard"}, 1),
 ]
+MATERIAL_INGOT = {
+    "copper": "minecraft:copper_ingot",
+    "iron": "minecraft:iron_ingot",
+    "lapis": "minecraft:lapis_lazuli",
+    "diamond": "minecraft:diamond",
+    "netherite": "minecraft:netherite_ingot",
+}
+CORE_ITEM = {
+    "speed": "minecraft:sugar",
+    "storage": "minecraft:chest",
+    "research": "minecraft:amethyst_shard",
+}
+for _tier in TIERS:
+    for _track in TRACKS:
+        RECIPES.append((f"{_track}_module_{_tier}", ["MRM", " S "], {
+            "M": MATERIAL_INGOT[_tier],
+            "R": "minecraft:redstone",
+            "S": CORE_ITEM[_track],
+        }, 1))
 for name, pattern, keys, count in RECIPES:
     write(os.path.join(BP, "recipes", f"{name}.json"), {
         "format_version": "1.20.10",
@@ -560,23 +580,21 @@ write(os.path.join(RP, "textures", "terrain_texture.json"), {
     "texture_data": TEX_DATA,
 })
 
+ITEM_TEX = {
+    key: {"textures": f"textures/items/{key}"}
+    for key in ("mcn_tablet", "mcn_minecoin", "mcn_icon_computer", "mcn_icon_store",
+                "mcn_icon_coins", "mcn_icon_docs", "mcn_icon_shutdown",
+                "mcn_guidebook", "mcn_flash_drive")
+}
+for _tier in TIERS:
+    for _track in TRACKS:
+        ITEM_TEX[f"mcn_{_track}_module_{_tier}"] = {
+            "textures": f"textures/items/mcn_{_track}_module_{_tier}"}
+
 write(os.path.join(RP, "textures", "item_texture.json"), {
     "resource_pack_name": "minecoins",
     "texture_name": "atlas.items",
-    "texture_data": {
-        "mcn_tablet": {"textures": "textures/items/mcn_tablet"},
-        "mcn_minecoin": {"textures": "textures/items/mcn_minecoin"},
-        "mcn_icon_computer": {"textures": "textures/items/mcn_icon_computer"},
-        "mcn_icon_store": {"textures": "textures/items/mcn_icon_store"},
-        "mcn_icon_coins": {"textures": "textures/items/mcn_icon_coins"},
-        "mcn_icon_docs": {"textures": "textures/items/mcn_icon_docs"},
-        "mcn_icon_shutdown": {"textures": "textures/items/mcn_icon_shutdown"},
-        "mcn_guidebook": {"textures": "textures/items/mcn_guidebook"},
-        "mcn_flash_drive": {"textures": "textures/items/mcn_flash_drive"},
-        "mcn_speed_module": {"textures": "textures/items/mcn_speed_module"},
-        "mcn_storage_module": {"textures": "textures/items/mcn_storage_module"},
-        "mcn_research_module": {"textures": "textures/items/mcn_research_module"},
-    },
+    "texture_data": ITEM_TEX,
 })
 
 
@@ -731,28 +749,24 @@ def tex_flash_drive(x, y):
     return (0, 0, 0, 0)
 
 
-def module_icon(x, y, tint):
+TRACK_TINT = {"speed": (214, 78, 62), "storage": (62, 190, 118),
+              "research": (168, 110, 226)}
+TIER_STUD = {"copper": (198, 120, 72), "iron": (206, 210, 216),
+             "lapis": (70, 110, 220), "diamond": (110, 230, 240),
+             "netherite": (96, 86, 100)}
+
+
+def module_icon(x, y, tint, stud):
+    """Board in the track colour, with the tier metal on the corner studs."""
     if x < 2 or y < 2 or x > 13 or y > 13:
         return (0, 0, 0, 0)
     if x in (2, 13) or y in (2, 13):
         return (58, 64, 78, 255)
     if (x, y) in ((4, 4), (11, 4), (4, 11), (11, 11)):
-        return (206, 210, 216, 255)
+        return (*stud, 255)
     if 5 <= x <= 10 and 5 <= y <= 10:
         return (*tint, 255)
     return (38, 44, 56, 255)
-
-
-def tex_module_speed(x, y):
-    return module_icon(x, y, (214, 78, 62))
-
-
-def tex_module_storage(x, y):
-    return module_icon(x, y, (62, 190, 118))
-
-
-def tex_module_research(x, y):
-    return module_icon(x, y, (168, 110, 226))
 
 
 def tex_monitor(x, y):
@@ -896,10 +910,12 @@ write(os.path.join(RP, "textures", "flipbook_textures.json"), [
 
 ITEM_TEXTURES = {"mcn_tablet": tex_tablet, "mcn_minecoin": tex_minecoin,
                  "mcn_guidebook": tex_guidebook,
-                 "mcn_flash_drive": tex_flash_drive,
-                 "mcn_speed_module": tex_module_speed,
-                 "mcn_storage_module": tex_module_storage,
-                 "mcn_research_module": tex_module_research}
+                 "mcn_flash_drive": tex_flash_drive}
+for _tier in TIERS:
+    for _track in TRACKS:
+        ITEM_TEXTURES[f"mcn_{_track}_module_{_tier}"] = (
+            lambda x, y, tr=_track, ti=_tier: module_icon(
+                x, y, TRACK_TINT[tr], TIER_STUD[ti]))
 for n, fn in ITEM_TEXTURES.items():
     png(os.path.join(RP, "textures", "items", f"{n}.png"), fn)
 

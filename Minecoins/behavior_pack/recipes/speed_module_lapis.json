@@ -2,7 +2,7 @@
   "format_version": "1.20.10",
   "minecraft:recipe_shaped": {
     "description": {
-      "identifier": "minecoins:storage_module"
+      "identifier": "minecoins:speed_module_lapis"
     },
     "tags": [
       "crafting_table"
@@ -11,23 +11,22 @@
       "context": "AlwaysUnlocked"
     },
     "pattern": [
-      "IRI",
-      "RCR",
-      "IRI"
+      "MRM",
+      " S "
     ],
     "key": {
-      "I": {
-        "item": "minecraft:iron_ingot"
+      "M": {
+        "item": "minecraft:lapis_lazuli"
       },
       "R": {
         "item": "minecraft:redstone"
       },
-      "C": {
-        "item": "minecraft:chest"
+      "S": {
+        "item": "minecraft:sugar"
       }
     },
     "result": {
-      "item": "minecoins:storage_module",
+      "item": "minecoins:speed_module_lapis",
       "count": 1
     }
   }

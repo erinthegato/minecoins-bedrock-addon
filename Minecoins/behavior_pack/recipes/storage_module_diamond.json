@@ -2,7 +2,7 @@
   "format_version": "1.20.10",
   "minecraft:recipe_shaped": {
     "description": {
-      "identifier": "minecoins:research_module"
+      "identifier": "minecoins:storage_module_diamond"
     },
     "tags": [
       "crafting_table"
@@ -11,23 +11,22 @@
       "context": "AlwaysUnlocked"
     },
     "pattern": [
-      "BRB",
-      "RSR",
-      "BRB"
+      "MRM",
+      " S "
     ],
     "key": {
-      "B": {
-        "item": "minecraft:book"
+      "M": {
+        "item": "minecraft:diamond"
       },
       "R": {
         "item": "minecraft:redstone"
       },
       "S": {
-        "item": "minecraft:amethyst_shard"
+        "item": "minecraft:chest"
       }
     },
     "result": {
-      "item": "minecoins:research_module",
+      "item": "minecoins:storage_module_diamond",
       "count": 1
     }
   }

@@ -1,0 +1,33 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "minecoins:research_module_copper"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "unlock": {
+      "context": "AlwaysUnlocked"
+    },
+    "pattern": [
+      "MRM",
+      " S "
+    ],
+    "key": {
+      "M": {
+        "item": "minecraft:copper_ingot"
+      },
+      "R": {
+        "item": "minecraft:redstone"
+      },
+      "S": {
+        "item": "minecraft:amethyst_shard"
+      }
+    },
+    "result": {
+      "item": "minecoins:research_module_copper",
+      "count": 1
+    }
+  }
+}
