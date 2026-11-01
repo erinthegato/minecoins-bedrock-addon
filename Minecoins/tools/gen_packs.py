@@ -14,7 +14,7 @@ UUID_BP_DATA = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a02"
 UUID_BP_SCRIPT = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a03"
 UUID_RP = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a04"
 UUID_RP_RES = "6f2d1f1c-9a3b-4b1e-8c2a-2a5f3d7b1a05"
-VERSION = [2, 1, 1]
+VERSION = [2, 1, 2]
 
 # Creative menu: one collapsible group per tab. The same names are declared
 # on the block/item definitions and in item_catalog/crafting_item_catalog.json
@@ -299,7 +299,7 @@ write(os.path.join(BP, "items", "tablet.json"), {
             "minecraft:display_name": {"value": "Minecoins Tablet"},
             "minecraft:max_stack_size": 1,
             "minecraft:hand_equipped": True,
-            "minecraft:allow_offhand": True,
+            "minecraft:allow_off_hand": True,
             "minecraft:glint": True,
         },
     },

@@ -18,7 +18,7 @@
       },
       "minecraft:max_stack_size": 1,
       "minecraft:hand_equipped": true,
-      "minecraft:allow_offhand": true,
+      "minecraft:allow_off_hand": true,
       "minecraft:glint": true
     }
   }
