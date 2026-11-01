@@ -8,7 +8,7 @@
  * - Catalog: buy nearly every obtainable item, diamond tier most expensive
  */
 import { world, system, ItemStack, EquipmentSlot, BlockPermutation } from "@minecraft/server";
-import { ActionFormData } from "@minecraft/server-ui";
+import { ActionFormData, FormCancelationReason } from "@minecraft/server-ui";
 
 const VERSION = "2.1.7";
 
@@ -921,14 +921,33 @@ function winBody(name, lines) {
   return `${name}\n\n${rows}`;
 }
 
-async function show(form, player) {
-  try {
-    const res = await form.show(player);
+const sleep = (ticks) => new Promise((resolve) => system.runTimeout(() => resolve(), ticks));
+
+/**
+ * Show a form, retrying while the player is still busy with whatever opened it.
+ * Minecraft cancels a UI requested in the same tick as an interaction, and that
+ * cancel looks exactly like the player closing the screen, so retry instead of
+ * treating it as a cancel.
+ */
+async function show(form, player, label = "form") {
+  for (let attempt = 0; attempt < 25; attempt++) {
+    let res;
+    try {
+      res = await form.show(player);
+    } catch (err) {
+      LOG(`${label} failed to open: ${err && err.message ? err.message : err}`);
+      return { canceled: true };
+    }
+    if (res && res.canceled && res.cancelationReason === FormCancelationReason.UserBusy) {
+      await sleep(2);
+      continue;
+    }
     if (res && res.selection !== undefined) click(player);
     return res;
-  } catch {
-    return { canceled: true };
   }
+  LOG(`${label} stayed busy and was abandoned`);
+  player.sendMessage("§b[mineOS] §cThe screen stayed busy — use it again.");
+  return { canceled: true };
 }
 
 function statusLine(grid) {
